@@ -1,0 +1,1611 @@
+.flag-shadowed {
+  background-image: url(../img/flags-sprite.webp);
+  background-repeat: no-repeat;
+  display: block;
+  width: 27px;
+  height: 20px;
+}
+
+.flag-shadowed-TV,
+.gtld-,
+.gtld-abogado,
+.gtld-academy,
+.gtld-accountant,
+.gtld-accountants,
+.gtld-actor,
+.gtld-adult,
+.gtld-aealt,
+.gtld-aero,
+.gtld-africa,
+.gtld-africaalt,
+.gtld-agency,
+.gtld-airforce,
+.gtld-alsace,
+.gtld-am,
+.gtld-amsterdam,
+.gtld-apartments,
+.gtld-aralt,
+.gtld-archi,
+.gtld-army,
+.gtld-art,
+.gtld-asia,
+.gtld-associates,
+.gtld-attorney,
+.gtld-auction,
+.gtld-audio,
+.gtld-auto,
+.gtld-autos,
+.gtld-baby,
+.gtld-band,
+.gtld-bar,
+.gtld-barcelona,
+.gtld-bargains,
+.gtld-bayern,
+.gtld-beer,
+.gtld-berlin,
+.gtld-best,
+.gtld-bet,
+.gtld-bible,
+.gtld-bid,
+.gtld-bike,
+.gtld-bingo,
+.gtld-bio,
+.gtld-biz,
+.gtld-black,
+.gtld-blackfriday,
+.gtld-blog,
+.gtld-blue,
+.gtld-boats,
+.gtld-boutique,
+.gtld-bralt,
+.gtld-broker,
+.gtld-brussels,
+.gtld-build,
+.gtld-builders,
+.gtld-business,
+.gtld-buzz,
+.gtld-bzh,
+.gtld-cab,
+.gtld-cafe,
+.gtld-cam,
+.gtld-camera,
+.gtld-camp,
+.gtld-capetown,
+.gtld-capital,
+.gtld-car,
+.gtld-cards,
+.gtld-care,
+.gtld-career,
+.gtld-careers,
+.gtld-cars,
+.gtld-casa,
+.gtld-cash,
+.gtld-casino,
+.gtld-cat,
+.gtld-catering,
+.gtld-cc,
+.gtld-center,
+.gtld-ceo,
+.gtld-cfd,
+.gtld-chat,
+.gtld-cheap,
+.gtld-christmas,
+.gtld-church,
+.gtld-city,
+.gtld-claims,
+.gtld-cleaning,
+.gtld-click,
+.gtld-clinic,
+.gtld-clothing,
+.gtld-cloud,
+.gtld-club,
+.gtld-cnalt,
+.gtld-cnidn,
+.gtld-co,
+.gtld-co-com,
+.gtld-coach,
+.gtld-codes,
+.gtld-coffee,
+.gtld-college,
+.gtld-cologne,
+.gtld-com,
+.gtld-community,
+.gtld-company,
+.gtld-computer,
+.gtld-condos,
+.gtld-construction,
+.gtld-consulting,
+.gtld-contractors,
+.gtld-cooking,
+.gtld-cool,
+.gtld-coop,
+.gtld-cop,
+.gtld-corsica,
+.gtld-country,
+.gtld-coupons,
+.gtld-courses,
+.gtld-credit,
+.gtld-creditcard,
+.gtld-cricket,
+.gtld-cruises,
+.gtld-cymru,
+.gtld-dad,
+.gtld-dance,
+.gtld-date,
+.gtld-dating,
+.gtld-deals,
+.gtld-dealt,
+.gtld-degree,
+.gtld-delivery,
+.gtld-democrat,
+.gtld-dental,
+.gtld-dentist,
+.gtld-desi,
+.gtld-design,
+.gtld-diamonds,
+.gtld-diet,
+.gtld-digital,
+.gtld-direct,
+.gtld-directory,
+.gtld-discount,
+.gtld-doctor,
+.gtld-dog,
+.gtld-dom,
+.gtld-domains,
+.gtld-download,
+.gtld-durban,
+.gtld-earth,
+.gtld-edu,
+.gtld-education,
+.gtld-email,
+.gtld-emalt,
+.gtld-energy,
+.gtld-engineer,
+.gtld-engineering,
+.gtld-enterprises,
+.gtld-equipment,
+.gtld-esq,
+.gtld-estate,
+.gtld-eus,
+.gtld-events,
+.gtld-exchange,
+.gtld-expert,
+.gtld-exposed,
+.gtld-express,
+.gtld-fail,
+.gtld-faith,
+.gtld-family,
+.gtld-fans,
+.gtld-farm,
+.gtld-fashion,
+.gtld-feedback,
+.gtld-film,
+.gtld-finance,
+.gtld-financial,
+.gtld-fish,
+.gtld-fishing,
+.gtld-fit,
+.gtld-fitness,
+.gtld-flights,
+.gtld-florist,
+.gtld-flowers,
+.gtld-fm,
+.gtld-foo,
+.gtld-football,
+.gtld-forex,
+.gtld-forsale,
+.gtld-forum,
+.gtld-foundation,
+.gtld-frl,
+.gtld-fun,
+.gtld-fund,
+.gtld-furniture,
+.gtld-futbol,
+.gtld-fyi,
+.gtld-gal,
+.gtld-gallery,
+.gtld-game,
+.gtld-games,
+.gtld-garden,
+.gtld-gay,
+.gtld-gbalt,
+.gtld-gdn,
+.gtld-genam,
+.gtld-gencc,
+.gtld-genco,
+.gtld-gendom,
+.gtld-genfm,
+.gtld-genla,
+.gtld-genly,
+.gtld-genme,
+.gtld-genpw,
+.gtld-gent,
+.gtld-gentm,
+.gtld-gentv,
+.gtld-genws,
+.gtld-gift,
+.gtld-gifts,
+.gtld-gives,
+.gtld-glass,
+.gtld-global,
+.gtld-gmbh,
+.gtld-gold,
+.gtld-golf,
+.gtld-gralt,
+.gtld-graphics,
+.gtld-gratis,
+.gtld-green,
+.gtld-gripe,
+.gtld-group,
+.gtld-guide,
+.gtld-guitars,
+.gtld-guru,
+.gtld-hamburg,
+.gtld-haus,
+.gtld-healthcare,
+.gtld-help,
+.gtld-hiphop,
+.gtld-hiv,
+.gtld-hkalt,
+.gtld-hkidn,
+.gtld-hockey,
+.gtld-holdings,
+.gtld-holiday,
+.gtld-homes,
+.gtld-horse,
+.gtld-hospital,
+.gtld-host,
+.gtld-hosting,
+.gtld-house,
+.gtld-how,
+.gtld-hualt,
+.gtld-immo,
+.gtld-immobilien,
+.gtld-industries,
+.gtld-info,
+.gtld-ing,
+.gtld-ink,
+.gtld-institute,
+.gtld-insurance,
+.gtld-insure,
+.gtld-int,
+.gtld-international,
+.gtld-investments,
+.gtld-irish,
+.gtld-ist,
+.gtld-istanbul,
+.gtld-jetzt,
+.gtld-jewelry,
+.gtld-jobs,
+.gtld-joburg,
+.gtld-joidn,
+.gtld-jpalt,
+.gtld-jpnalt,
+.gtld-juegos,
+.gtld-kaufen,
+.gtld-kids,
+.gtld-kim,
+.gtld-kitchen,
+.gtld-kiwi,
+.gtld-koeln,
+.gtld-kralt,
+.gtld-kridn,
+.gtld-kyoto,
+.gtld-la,
+.gtld-land,
+.gtld-lat,
+.gtld-law,
+.gtld-lawyer,
+.gtld-lease,
+.gtld-legal,
+.gtld-lgbt,
+.gtld-life,
+.gtld-lighting,
+.gtld-limited,
+.gtld-limo,
+.gtld-link,
+.gtld-live,
+.gtld-loan,
+.gtld-loans,
+.gtld-lol,
+.gtld-london,
+.gtld-love,
+.gtld-ltd,
+.gtld-ltda,
+.gtld-luxury,
+.gtld-ly,
+.gtld-maison,
+.gtld-makeup,
+.gtld-management,
+.gtld-market,
+.gtld-marketing,
+.gtld-markets,
+.gtld-mba,
+.gtld-me,
+.gtld-media,
+.gtld-meet,
+.gtld-melbourne,
+.gtld-meme,
+.gtld-memorial,
+.gtld-men,
+.gtld-menu,
+.gtld-miami,
+.gtld-mobi,
+.gtld-moda,
+.gtld-moe,
+.gtld-mom,
+.gtld-money,
+.gtld-mortgage,
+.gtld-moscow,
+.gtld-motorcycles,
+.gtld-mov,
+.gtld-movie,
+.gtld-msm,
+.gtld-museum,
+.gtld-nagoya,
+.gtld-name,
+.gtld-navy,
+.gtld-net,
+.gtld-network,
+.gtld-news,
+.gtld-nexus,
+.gtld-ninja,
+.gtld-noalt,
+.gtld-nrw,
+.gtld-nyc,
+.gtld-okinawa,
+.gtld-one,
+.gtld-onl,
+.gtld-online,
+.gtld-ooo,
+.gtld-org,
+.gtld-organic,
+.gtld-osaka,
+.gtld-paris,
+.gtld-partners,
+.gtld-parts,
+.gtld-party,
+.gtld-pet,
+.gtld-pharmacy,
+.gtld-phd,
+.gtld-photo,
+.gtld-photography,
+.gtld-photos,
+.gtld-physio,
+.gtld-pics,
+.gtld-pictures,
+.gtld-pink,
+.gtld-pizza,
+.gtld-place,
+.gtld-plumbing,
+.gtld-plus,
+.gtld-poker,
+.gtld-porn,
+.gtld-press,
+.gtld-pro,
+.gtld-productions,
+.gtld-prof,
+.gtld-promo,
+.gtld-properties,
+.gtld-property,
+.gtld-protection,
+.gtld-psidn,
+.gtld-pub,
+.gtld-pw,
+.gtld-qaidn,
+.gtld-qpon,
+.gtld-quebec,
+.gtld-racing,
+.gtld-recipes,
+.gtld-red,
+.gtld-rehab,
+.gtld-reise,
+.gtld-reisen,
+.gtld-reit,
+.gtld-rent,
+.gtld-rentals,
+.gtld-repair,
+.gtld-report,
+.gtld-republican,
+.gtld-rest,
+.gtld-restaurant,
+.gtld-review,
+.gtld-reviews,
+.gtld-rich,
+.gtld-rio,
+.gtld-rip,
+.gtld-rocks,
+.gtld-rodeo,
+.gtld-rsidn,
+.gtld-rualt,
+.gtld-ruhr,
+.gtld-ruidn,
+.gtld-run,
+.gtld-ryukyu,
+.gtld-saalt,
+.gtld-saarland,
+.gtld-saidn,
+.gtld-sale,
+.gtld-salon,
+.gtld-sarl,
+.gtld-school,
+.gtld-schule,
+.gtld-science,
+.gtld-scot,
+.gtld-sealt,
+.gtld-security,
+.gtld-services,
+.gtld-sex,
+.gtld-sexy,
+.gtld-sgcnidn,
+.gtld-sgtamidn,
+.gtld-shiksha,
+.gtld-shoes,
+.gtld-shop,
+.gtld-shopping,
+.gtld-show,
+.gtld-singles,
+.gtld-site,
+.gtld-ski,
+.gtld-soccer,
+.gtld-social,
+.gtld-software,
+.gtld-solar,
+.gtld-solutions,
+.gtld-soy,
+.gtld-space,
+.gtld-spreadbetting,
+.gtld-srl,
+.gtld-storage,
+.gtld-store,
+.gtld-stream,
+.gtld-studio,
+.gtld-study,
+.gtld-style,
+.gtld-sucks,
+.gtld-supplies,
+.gtld-supply,
+.gtld-support,
+.gtld-surf,
+.gtld-surgery,
+.gtld-swiss,
+.gtld-sydney,
+.gtld-systems,
+.gtld-taipei,
+.gtld-tatar,
+.gtld-tattoo,
+.gtld-tax,
+.gtld-taxi,
+.gtld-team,
+.gtld-tech,
+.gtld-technology,
+.gtld-tel,
+.gtld-telsun,
+.gtld-tennis,
+.gtld-theater,
+.gtld-theatre,
+.gtld-tickets,
+.gtld-tienda,
+.gtld-tips,
+.gtld-tires,
+.gtld-tirol,
+.gtld-tm,
+.gtld-tnidn,
+.gtld-today,
+.gtld-tokyo,
+.gtld-tools,
+.gtld-top,
+.gtld-tours,
+.gtld-town,
+.gtld-toys,
+.gtld-trade,
+.gtld-trading,
+.gtld-training,
+.gtld-travel,
+.gtld-tube,
+.gtld-tv,
+.gtld-twidn,
+.gtld-uaidn,
+.gtld-ukalt,
+.gtld-um,
+.gtld-university,
+.gtld-uno,
+.gtld-usalt,
+.gtld-uyalt,
+.gtld-vacations,
+.gtld-vegas,
+.gtld-venture,
+.gtld-versicherung,
+.gtld-vet,
+.gtld-viajes,
+.gtld-video,
+.gtld-villas,
+.gtld-vin,
+.gtld-vip,
+.gtld-vision,
+.gtld-vlaanderen,
+.gtld-vodka,
+.gtld-vote,
+.gtld-voting,
+.gtld-voto,
+.gtld-voyage,
+.gtld-wales,
+.gtld-wang,
+.gtld-watch,
+.gtld-watches,
+.gtld-webcam,
+.gtld-website,
+.gtld-wedding,
+.gtld-whoswho,
+.gtld-wien,
+.gtld-wiki,
+.gtld-win,
+.gtld-wine,
+.gtld-work,
+.gtld-works,
+.gtld-world,
+.gtld-ws,
+.gtld-wtf,
+.gtld-xxx,
+.gtld-xyz,
+.gtld-yachts,
+.gtld-yoga,
+.gtld-yokohama,
+.gtld-zaalt,
+.gtld-zip,
+.gtld-zone,
+.gtld-москва,
+.gtld-بكة,
+.gtld-موقع,
+.gtld-みんな,
+.gtld-中文网,
+.gtld-企业,
+.gtld-公司,
+.gtld-商店,
+.gtld-商标,
+.gtld-在线,
+.gtld-娱乐,
+.gtld-游戏,
+.gtld-移动,
+.gtld-网络 {
+  width: 27px;
+  height: 18px;
+}
+
+.flag-shadowed-TD {
+  background-position: -502px -160px;
+}
+
+.flag-shadowed-AQ {
+  background-position: -374px -5px;
+}
+
+.flag-shadowed-AR {
+  background-position: -412px -5px;
+}
+
+.flag-shadowed-BO {
+  background-position: -634px -5px;
+}
+
+.flag-shadowed-EC {
+  background-position: -630px -119px;
+}
+
+.flag-shadowed-FK {
+  background-position: -637px -149px;
+}
+
+.flag-shadowed-GF {
+  background-position: -637px -179px;
+}
+
+.flag-shadowed-GY {
+  background-position: -636px -209px;
+}
+
+.flag-shadowed-KY-2 {
+  background-position: -630px -239px;
+}
+
+.flag-shadowed-PE {
+  background-position: -143px -499px;
+}
+
+.flag-shadowed-PG {
+  background-position: -227px -499px;
+}
+
+.flag-shadowed-PY {
+  background-position: -636px -499px;
+}
+
+.flag-shadowed-UY {
+  background-position: -653px -73px;
+}
+
+.flag-shadowed-VE {
+  background-position: -675px -179px;
+}
+
+.flag-shadowed-CN {
+  background-position: -499px -119px;
+}
+
+.flag-shadowed-AC {
+  background-position: -195px -653px;
+}
+
+.flag-shadowed-AD {
+  background-position: -55px -7px;
+}
+
+.flag-shadowed-AE {
+  background-position: -101px -7px;
+}
+
+.flag-shadowed-AF {
+  background-position: -147px -7px;
+}
+
+.flag-shadowed-AG {
+  background-position: -193px -7px;
+}
+
+.flag-shadowed-AI {
+  background-position: -239px -7px;
+}
+
+.flag-shadowed-AM {
+  background-position: -285px -7px;
+}
+
+.flag-shadowed-AO {
+  background-position: -332px -7px;
+}
+
+.flag-shadowed-AS {
+  background-position: -454px -7px;
+}
+
+.flag-shadowed-AT {
+  background-position: -500px -7px;
+}
+
+.flag-shadowed-AU {
+  background-position: -546px -7px;
+}
+
+.flag-shadowed-AW {
+  background-position: -592px -7px;
+}
+
+.flag-shadowed-AX {
+  background-position: -9px -45px;
+}
+
+.flag-shadowed-AZ {
+  background-position: -55px -45px;
+}
+
+.flag-shadowed-Africa-com {
+  background-position: -101px -45px;
+}
+
+.flag-shadowed-BA {
+  background-position: -147px -45px;
+}
+
+.flag-shadowed-BB {
+  background-position: -194px -45px;
+}
+
+.flag-shadowed-BD {
+  background-position: -240px -45px;
+}
+
+.flag-shadowed-BE {
+  background-position: -286px -45px;
+}
+
+.flag-shadowed-BF {
+  background-position: -332px -45px;
+}
+
+.flag-shadowed-BG {
+  background-position: -379px -45px;
+}
+
+.flag-shadowed-BH {
+  background-position: -426px -45px;
+}
+
+.flag-shadowed-BI {
+  background-position: -472px -45px;
+}
+
+.flag-shadowed-BJ {
+  background-position: -519px -45px;
+}
+
+.flag-shadowed-BM {
+  background-position: -565px -45px;
+}
+
+.flag-shadowed-BN {
+  background-position: -611px -45px;
+}
+
+.flag-shadowed-BS {
+  background-position: -192px -83px;
+}
+
+.flag-shadowed-BW {
+  background-position: -238px -83px;
+}
+
+.flag-shadowed-BY {
+  background-position: -285px -83px;
+}
+
+.flag-shadowed-BZ {
+  background-position: -331px -83px;
+}
+
+.flag-shadowed-BENELUX {
+  background-position: -377px -83px;
+}
+
+.flag-shadowed-CA {
+  background-position: -423px -83px;
+}
+
+.flag-shadowed-CC {
+  background-position: -469px -83px;
+}
+
+.flag-shadowed-CD {
+  background-position: -515px -83px;
+}
+
+.flag-shadowed-CF {
+  background-position: -562px -83px;
+}
+
+.flag-shadowed-CG {
+  background-position: -609px -83px;
+}
+
+.flag-shadowed-CH {
+  background-position: -192px -121px;
+}
+
+.flag-shadowed-CI {
+  background-position: -239px -121px;
+}
+
+.flag-shadowed-CK {
+  background-position: -285px -121px;
+}
+
+.flag-shadowed-CM {
+  background-position: -456px -121px;
+}
+
+.flag-shadowed-CO {
+  background-position: -542px -121px;
+}
+
+.flag-shadowed-CR {
+  background-position: -588px -121px;
+}
+
+.flag-shadowed-CV {
+  background-position: -109px -159px;
+}
+
+.flag-shadowed-CW {
+  background-position: -155px -159px;
+}
+
+.flag-shadowed-CX {
+  background-position: -201px -159px;
+}
+
+.flag-shadowed-CY {
+  background-position: -247px -159px;
+}
+
+.flag-shadowed-CZ {
+  background-position: -456px -159px;
+}
+
+.flag-shadowed-CHAD {
+  background-position: -502px -159px;
+}
+
+.flag-shadowed-DE {
+  background-position: -548px -159px;
+}
+
+.flag-shadowed-DJ {
+  background-position: -595px -159px;
+}
+
+.flag-shadowed-DK {
+  background-position: -9px -197px;
+}
+
+.flag-shadowed-DM {
+  background-position: -56px -197px;
+}
+
+.flag-shadowed-DO {
+  background-position: -102px -197px;
+}
+
+.flag-shadowed-DZ {
+  background-position: -148px -197px;
+}
+
+.flag-shadowed-EE {
+  background-position: -194px -197px;
+}
+
+.flag-shadowed-EG {
+  background-position: -241px -197px;
+}
+
+.flag-shadowed-ER {
+  background-position: -456px -197px;
+}
+
+.flag-shadowed-ES {
+  background-position: -502px -197px;
+}
+
+.flag-shadowed-ET {
+  background-position: -548px -197px;
+}
+
+.flag-shadowed-EU,
+.flag-shadowedCur-EUR {
+  background-position: -594px -197px;
+}
+
+.flag-shadowed-FI {
+  background-position: -78px -235px;
+}
+
+.flag-shadowed-FJ {
+  background-position: -124px -235px;
+}
+
+.flag-shadowed-FM-2 {
+  background-position: -170px -235px;
+}
+
+.flag-shadowed-FM {
+  background-position: -216px -235px;
+}
+
+.flag-shadowed-FO {
+  background-position: -262px -235px;
+}
+
+.flag-shadowed-FR {
+  background-position: -309px -235px;
+}
+
+.flag-shadowed-FR-3 {
+  background-position: -355px -235px;
+}
+
+.flag-shadowed-GA {
+  background-position: -401px -235px;
+}
+
+.flag-shadowed-GD {
+  background-position: -448px -235px;
+}
+
+.flag-shadowed-GE {
+  background-position: -494px -235px;
+}
+
+.flag-shadowed-GG {
+  background-position: -540px -235px;
+}
+
+.flag-shadowed-GH {
+  background-position: -587px -235px;
+}
+
+.flag-shadowed-GI {
+  background-position: -78px -273px;
+}
+
+.flag-shadowed-GL {
+  background-position: -125px -273px;
+}
+
+.flag-shadowed-GM {
+  background-position: -171px -273px;
+}
+
+.flag-shadowed-GN {
+  background-position: -218px -273px;
+}
+
+.flag-shadowed-GP {
+  background-position: -264px -273px;
+}
+
+.flag-shadowed-GQ {
+  background-position: -310px -273px;
+}
+
+.flag-shadowed-GR {
+  background-position: -356px -273px;
+}
+
+.flag-shadowed-GT {
+  background-position: -403px -273px;
+}
+
+.flag-shadowed-GW {
+  background-position: -449px -273px;
+}
+
+.flag-shadowed-HK {
+  background-position: -495px -273px;
+}
+
+.flag-shadowed-HM {
+  background-position: -541px -273px;
+}
+
+.flag-shadowed-HN {
+  background-position: -587px -273px;
+}
+
+.flag-shadowed-HR {
+  background-position: -633px -273px;
+}
+
+.flag-shadowed-HT {
+  background-position: -9px -311px;
+}
+
+.flag-shadowed-HU {
+  background-position: -55px -311px;
+}
+
+.flag-shadowed-ID {
+  background-position: -101px -311px;
+}
+
+.flag-shadowed-IE {
+  background-position: -147px -311px;
+}
+
+.flag-shadowed-IL {
+  background-position: -194px -311px;
+}
+
+.flag-shadowed-IM {
+  background-position: -240px -311px;
+}
+
+.flag-shadowed-IN {
+  background-position: -286px -311px;
+}
+
+.flag-shadowed-IQ {
+  background-position: -333px -311px;
+}
+
+.flag-shadowed-IR {
+  background-position: -379px -311px;
+}
+
+.flag-shadowed-IS {
+  background-position: -425px -311px;
+}
+
+.flag-shadowed-IT {
+  background-position: -472px -311px;
+}
+
+.flag-shadowed-JE {
+  background-position: -518px -311px;
+}
+
+.flag-shadowed-JM {
+  background-position: -565px -311px;
+}
+
+.flag-shadowed-JO {
+  background-position: -611px -311px;
+}
+
+.flag-shadowed-JP {
+  background-position: -9px -349px;
+}
+
+.flag-shadowed-KE {
+  background-position: -56px -349px;
+}
+
+.flag-shadowed-KG {
+  background-position: -102px -349px;
+}
+
+.flag-shadowed-KH {
+  background-position: -148px -349px;
+}
+
+.flag-shadowed-KI {
+  background-position: -242px -349px;
+}
+
+.flag-shadowed-KM {
+  background-position: -288px -349px;
+}
+
+.flag-shadowed-KN {
+  background-position: -334px -349px;
+}
+
+.flag-shadowed-KP {
+  background-position: -380px -349px;
+}
+
+.flag-shadowed-KR {
+  background-position: -426px -349px;
+}
+
+.flag-shadowed-KW {
+  background-position: -472px -349px;
+}
+
+.flag-shadowed-KY {
+  background-position: -518px -349px;
+}
+
+.flag-shadowed-KZ {
+  background-position: -564px -349px;
+}
+
+.flag-shadowed-LA {
+  background-position: -610px -349px;
+}
+
+.flag-shadowed-LB {
+  background-position: -9px -387px;
+}
+
+.flag-shadowed-LC {
+  background-position: -55px -387px;
+}
+
+.flag-shadowed-LI {
+  background-position: -101px -387px;
+}
+
+.flag-shadowed-LK {
+  background-position: -148px -387px;
+}
+
+.flag-shadowed-LR {
+  background-position: -194px -387px;
+}
+
+.flag-shadowed-LS {
+  background-position: -240px -387px;
+}
+
+.flag-shadowed-LT {
+  background-position: -286px -387px;
+}
+
+.flag-shadowed-LU {
+  background-position: -332px -387px;
+}
+
+.flag-shadowed-LV {
+  background-position: -378px -387px;
+}
+
+.flag-shadowed-LY {
+  background-position: -425px -387px;
+}
+
+.flag-shadowed-MA {
+  background-position: -471px -387px;
+}
+
+.flag-shadowed-MC {
+  background-position: -517px -387px;
+}
+
+.flag-shadowed-MD {
+  background-position: -563px -387px;
+}
+
+.flag-shadowed-ME {
+  background-position: -610px -387px;
+}
+
+.flag-shadowed-MG {
+  background-position: -9px -425px;
+}
+
+.flag-shadowed-MK {
+  background-position: -55px -425px;
+}
+
+.flag-shadowed-ML {
+  background-position: -101px -425px;
+}
+
+.flag-shadowed-MM {
+  background-position: -147px -425px;
+}
+
+.flag-shadowed-MN {
+  background-position: -194px -425px;
+}
+
+.flag-shadowed-MO {
+  background-position: -241px -425px;
+}
+
+.flag-shadowed-MQ {
+  background-position: -287px -425px;
+}
+
+.flag-shadowed-MR {
+  background-position: -333px -425px;
+}
+
+.flag-shadowed-MS {
+  background-position: -425px -425px;
+}
+
+.flag-shadowed-MT {
+  background-position: -471px -425px;
+}
+
+.flag-shadowed-MU {
+  background-position: -518px -425px;
+}
+
+.flag-shadowed-MV {
+  background-position: -564px -425px;
+}
+
+.flag-shadowed-MW {
+  background-position: -611px -425px;
+}
+
+.flag-shadowed-MX {
+  background-position: -9px -463px;
+}
+
+.flag-shadowed-MY {
+  background-position: -55px -463px;
+}
+
+.flag-shadowed-MZ {
+  background-position: -102px -463px;
+}
+
+.flag-shadowed-NA {
+  background-position: -148px -463px;
+}
+
+.flag-shadowed-NC {
+  background-position: -194px -463px;
+}
+
+.flag-shadowed-NE {
+  background-position: -240px -463px;
+}
+
+.flag-shadowed-NF {
+  background-position: -286px -463px;
+}
+
+.flag-shadowed-NG {
+  background-position: -332px -463px;
+}
+
+.flag-shadowed-NI {
+  background-position: -378px -463px;
+}
+
+.flag-shadowed-NL {
+  background-position: -424px -463px;
+}
+
+.flag-shadowed-NO {
+  background-position: -470px -463px;
+}
+
+.flag-shadowed-NP {
+  background-position: -516px -463px;
+}
+
+.flag-shadowed-NR {
+  background-position: -563px -463px;
+}
+
+.flag-shadowed-NU {
+  background-position: -609px -463px;
+}
+
+.flag-shadowed-NZ {
+  background-position: -9px -501px;
+}
+
+.flag-shadowed-OM {
+  background-position: -55px -501px;
+}
+
+.flag-shadowed-PA {
+  background-position: -101px -501px;
+}
+
+.flag-shadowed-PF {
+  background-position: -185px -501px;
+}
+
+.flag-shadowed-PH {
+  background-position: -269px -501px;
+}
+
+.flag-shadowed-PK {
+  background-position: -316px -501px;
+}
+
+.flag-shadowed-PL {
+  background-position: -362px -501px;
+}
+
+.flag-shadowed-PM {
+  background-position: -409px -501px;
+}
+
+.flag-shadowed-PN {
+  background-position: -455px -501px;
+}
+
+.flag-shadowed-PR {
+  background-position: -501px -501px;
+}
+
+.flag-shadowed-PS {
+  background-position: -547px -501px;
+}
+
+.flag-shadowed-PT {
+  background-position: -593px -501px;
+}
+
+.flag-shadowed-QA {
+  background-position: -9px -539px;
+}
+
+.flag-shadowed-RE {
+  background-position: -55px -539px;
+}
+
+.flag-shadowed-RO {
+  background-position: -101px -539px;
+}
+
+.flag-shadowed-RS {
+  background-position: -147px -539px;
+}
+
+.flag-shadowed-RU {
+  background-position: -194px -539px;
+}
+
+.flag-shadowed-RW {
+  background-position: -241px -539px;
+}
+
+.flag-shadowed-SA {
+  background-position: -287px -539px;
+}
+
+.flag-shadowed-SB {
+  background-position: -333px -539px;
+}
+
+.flag-shadowed-SC {
+  background-position: -379px -539px;
+}
+
+.flag-shadowed-SD {
+  background-position: -425px -539px;
+}
+
+.flag-shadowed-SE {
+  background-position: -471px -539px;
+}
+
+.flag-shadowed-SG {
+  background-position: -517px -539px;
+}
+
+.flag-shadowed-SH {
+  background-position: -563px -539px;
+}
+
+.flag-shadowed-SI {
+  background-position: -610px -539px;
+}
+
+.flag-shadowed-SK {
+  background-position: -9px -577px;
+}
+
+.flag-shadowed-SL {
+  background-position: -56px -577px;
+}
+
+.flag-shadowed-SM {
+  background-position: -102px -577px;
+}
+
+.flag-shadowed-SN {
+  background-position: -149px -577px;
+}
+
+.flag-shadowed-SO {
+  background-position: -195px -577px;
+}
+
+.flag-shadowed-ST {
+  background-position: -241px -577px;
+}
+
+.flag-shadowed-SU {
+  background-position: -287px -577px;
+}
+
+.flag-shadowed-SV {
+  background-position: -333px -577px;
+}
+
+.flag-shadowed-SX {
+  background-position: -379px -577px;
+}
+
+.flag-shadowed-SY {
+  background-position: -425px -577px;
+}
+
+.flag-shadowed-SZ {
+  background-position: -471px -577px;
+}
+
+.flag-shadowed-TC {
+  background-position: -517px -577px;
+}
+
+.flag-shadowed-TF {
+  background-position: -563px -577px;
+}
+
+.flag-shadowed-TG {
+  background-position: -609px -577px;
+}
+
+.flag-shadowed-TH {
+  background-position: -9px -615px;
+}
+
+.flag-shadowed-TJ {
+  background-position: -56px -615px;
+}
+
+.flag-shadowed-TK {
+  background-position: -103px -615px;
+}
+
+.flag-shadowed-TL {
+  background-position: -149px -615px;
+}
+
+.flag-shadowed-TM {
+  background-position: -195px -615px;
+}
+
+.flag-shadowed-TN {
+  background-position: -241px -615px;
+}
+
+.flag-shadowed-TO {
+  background-position: -287px -615px;
+}
+
+.flag-shadowed-TR {
+  background-position: -333px -615px;
+}
+
+.flag-shadowed-TT {
+  background-position: -379px -615px;
+}
+
+.flag-shadowed-TW {
+  background-position: -425px -615px;
+}
+
+.flag-shadowed-TZ {
+  background-position: -472px -615px;
+}
+
+.flag-shadowed-UA {
+  background-position: -518px -615px;
+}
+
+.flag-shadowed-UG {
+  background-position: -564px -615px;
+}
+
+.flag-shadowed-UK,
+.flag-shadowedCur-GBP {
+  background-position: -610px -615px;
+}
+
+.flag-shadowed-UZ {
+  background-position: -672px -105px;
+}
+
+.flag-shadowed-VC {
+  background-position: -679px -143px;
+}
+
+.flag-shadowed-VG {
+  background-position: -678px -211px;
+}
+
+.flag-shadowed-VI {
+  background-position: -679px -249px;
+}
+
+.flag-shadowed-VN {
+  background-position: -657px -311px;
+}
+
+.flag-shadowed-VU {
+  background-position: -656px -349px;
+}
+
+.flag-shadowed-WIPO {
+  background-position: -240px -691px;
+}
+
+.flag-shadowed-WS {
+  background-position: -657px -425px;
+}
+
+.flag-shadowed-YE {
+  background-position: -655px -463px;
+}
+
+.flag-shadowed-YT {
+  background-position: -678px -501px;
+}
+
+.flag-shadowed-ZA {
+  background-position: -656px -539px;
+}
+
+.flag-shadowed-ZM {
+  background-position: -655px -577px;
+}
+
+.flag-shadowed-ZW {
+  background-position: -656px -615px;
+}
+
+.flag-shadowed-BR {
+  background-position: -9px -653px;
+}
+
+.flag-shadowed-CL {
+  background-position: -55px -653px;
+}
+
+.flag-shadowed-GTLD-asia {
+  background-position: -101px -653px;
+}
+
+.flag-shadowed-SR {
+  background-position: -147px -653px;
+}
+
+.flag-shadowed-US,
+.flag-shadowedCur-USD {
+  background-position: -676px -7px;
+}
+
+.flag-shadowed-IO {
+  background-position: -191px -346px;
+}
+
+.flag-shadowed-GS {
+  background-position: -626px -236px;
+}
+
+.flag-shadowed-AN-shadow,
+.flag-shadowed-CHNIS-shadow,
+.flag-shadowed-CU-shadow,
+.flag-shadowed-PAY-shadow {
+  background: 0 0;
+}
+
+.flag-shadowed-ACIS {
+  background-position: -237px -651px;
+}
+
+.flag-shadowed-AL {
+  background-position: -283px -651px;
+}
+
+.flag-shadowed-ARIPO {
+  background-position: -329px -651px;
+}
+
+.flag-shadowed-BL {
+  background-position: -378px -653px;
+}
+
+.flag-shadowed-BNL {
+  background-position: -421px -651px;
+}
+
+.flag-shadowed-BT {
+  background-position: -468px -651px;
+}
+
+.flag-shadowed-EH {
+  background-position: -517px -653px;
+}
+
+.flag-shadowed-GU {
+  background-position: -564px -653px;
+}
+
+.flag-shadowed-KSV {
+  background-position: -606px -651px;
+}
+
+.flag-shadowed-MF {
+  background-position: -656px -653px;
+}
+
+.flag-shadowed-MH {
+  background-position: -9px -691px;
+}
+
+.flag-shadowed-MP {
+  background-position: -54px -691px;
+}
+
+.flag-shadowed-OAPI {
+  background-position: -97px -689px;
+}
+
+.flag-shadowed-WF {
+  background-position: -192px -691px;
+}
+
+.flag-shadowed-SS {
+  background-position: -287px -691px;
+}
