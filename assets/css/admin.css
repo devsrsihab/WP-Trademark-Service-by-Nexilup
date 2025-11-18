@@ -1,0 +1,21 @@
+.tm-pagination {
+  margin-top: 20px;
+}
+
+.tm-pagination .tm-page-link {
+  display: inline-block;
+  padding: 6px 12px;
+  margin-right: 5px;
+  background: #f1f1f1;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.tm-pagination .tm-page-link.active {
+  background: #2271b1;
+  color: #fff !important;
+}
+
+.tm-pagination .tm-page-link:hover {
+  background: #d5d5d5;
+}

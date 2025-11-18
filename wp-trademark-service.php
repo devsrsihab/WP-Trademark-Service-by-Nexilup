@@ -19,6 +19,7 @@ define( 'WP_TMS_NEXILUP_VERSION', '1.0.0' );
 define( 'WP_TMS_NEXILUP_PLUGIN_FILE', __FILE__ );
 define( 'WP_TMS_NEXILUP_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'WP_TMS_NEXILUP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+define('WP_TMS_NEXILUP_URL', plugin_dir_url(__FILE__));
 
 /**
  * Autoload includes
@@ -30,6 +31,7 @@ require_once WP_TMS_NEXILUP_PLUGIN_PATH . 'includes/class-tm-admin.php';
 require_once WP_TMS_NEXILUP_PLUGIN_PATH . 'includes/class-tm-frontend.php';
 require_once WP_TMS_NEXILUP_PLUGIN_PATH . 'includes/class-tm-woocommerce.php';
 require_once WP_TMS_NEXILUP_PLUGIN_PATH . 'includes/class-tm-countries.php';
+require_once WP_TMS_NEXILUP_PLUGIN_PATH . 'includes/class-tm-country-prices.php';
 
 
 /**
@@ -66,6 +68,8 @@ function wp_tms_nexilup_init() {
         TM_WooCommerce::init();
     }
     TM_Countries::init();
+    TM_Country_Prices::init();
+
 
 }
 

@@ -1,0 +1,98 @@
+/* Modal Styles */
+.tm-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.tm-modal-content {
+  background-color: #fff;
+  margin: 5% auto;
+  padding: 30px;
+  border-radius: 8px;
+  width: 500px;
+  max-width: 90%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.tm-modal h2 {
+  margin-top: 0;
+  color: #23282d;
+}
+
+/* Form Fields */
+.tm-field {
+  margin-bottom: 20px;
+}
+
+.tm-field label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #23282d;
+}
+
+.tm-input,
+.tm-small {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.tm-input:focus,
+.tm-small:focus {
+  border-color: #007cba;
+  outline: none;
+  box-shadow: 0 0 0 1px #007cba;
+}
+
+/* Buttons */
+.tm-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 25px;
+}
+
+/* Steps Layout */
+.tm-step-box {
+  background: #f9f9f9;
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.tm-step-box h3 {
+  margin: 0 0 15px 0;
+  font-size: 16px;
+  color: #23282d;
+}
+
+.tm-price-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .tm-modal-content {
+    margin: 10% auto;
+    padding: 20px;
+  }
+
+  .tm-price-inputs {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,6 +1,14 @@
 <?php if (!defined('ABSPATH')) exit; 
 
-$countries = TM_Countries::get_all(); 
+$data = TM_Database::paginate(
+    TM_Database::table_name('countries'),
+    "WHERE 1=1",
+    "country_name ASC",
+    10
+);
+
+$countries = $data['items'];
+
 $nonce = wp_create_nonce('tm_countries_nonce');
 ?>
 
@@ -76,6 +84,18 @@ $nonce = wp_create_nonce('tm_countries_nonce');
         </tbody>
     </table>
 
+    <?php if ($data['max_pages'] > 1): ?>
+    <div class="tm-pagination">
+        <?php for ($i = 1; $i <= $data['max_pages']; $i++): ?>
+            <a class="tm-page-link <?php echo $i == $data['current'] ? 'active' : ''; ?>"
+               href="?page=tm-countries&paged=<?php echo $i; ?>">
+                <?php echo $i; ?>
+            </a>
+        <?php endfor; ?>
+    </div>
+<?php endif; ?>
+
+
 </div>
 
 <!-- ===========================
@@ -147,7 +167,7 @@ $nonce = wp_create_nonce('tm_countries_nonce');
         <h2>Bulk Import Countries</h2>
 
         <p class="tm-small-note">Format:<br>
-            <code>{"name":"Albania","iso":"AL"}, {"name":"Brazil","iso":"BR"}, ...</code>
+            <code>{"name":"Albania","iso":"AL"}, {"name":"Brazil","iso":"BR"}</code>
         </p>
 
         <textarea id="tm-bulk-input" placeholder='{"name":"India","iso":"IN"}, {"name":"Italy","iso":"IT"}'></textarea>

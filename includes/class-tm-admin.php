@@ -93,11 +93,24 @@ class TM_Admin {
                 array(),
                 WP_TMS_NEXILUP_VERSION
             );
+            wp_enqueue_style(
+                'tm-admin-css',
+                WP_TMS_NEXILUP_PLUGIN_URL . 'assets/css/admin.css',
+                array(),
+                WP_TMS_NEXILUP_VERSION
+            );
 
             // ========== JS ==========
             wp_enqueue_script(
                 'tm-admin-countries',
                 WP_TMS_NEXILUP_PLUGIN_URL . 'assets/js/admin-countries.js', // Fixed: consistent naming
+                array('jquery'),
+                WP_TMS_NEXILUP_VERSION,
+                true
+            );
+            wp_enqueue_script(
+                'tm-admin-countries-prices',
+                WP_TMS_NEXILUP_PLUGIN_URL . 'assets/js/admin-prices.js', // Fixed: consistent naming
                 array('jquery'),
                 WP_TMS_NEXILUP_VERSION,
                 true

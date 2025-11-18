@@ -170,4 +170,73 @@ class TM_Database {
         dbDelta($sql5);
         dbDelta($sql6);
     }
+
+
+    public static function get_countries( $args = [] ) {
+        global $wpdb;
+
+        $table = self::table_name( 'countries' );
+        if ( ! $table ) {
+            return [];
+        }
+
+        // Defaults
+        $defaults = [
+            'active_only' => true,
+            'order_by'    => 'country_name',
+            'order'       => 'ASC',
+        ];
+
+        $args = wp_parse_args( $args, $defaults );
+
+        // WHERE
+        $where = 'WHERE 1=1';
+        if ( ! empty( $args['active_only'] ) ) {
+            // your countries table uses "status" or "is_active" depending on schema
+            // adjust this line based on your actual column name
+            $where .= ' AND status = 1';
+            // if your column name is is_active, use:
+            // $where .= ' AND is_active = 1';
+        }
+
+        // ORDER BY safety
+        $allowed_order_by = [ 'country_name', 'iso_code', 'id' ];
+        $order_by = in_array( $args['order_by'], $allowed_order_by, true )
+            ? $args['order_by']
+            : 'country_name';
+
+        $order = strtoupper( $args['order'] ) === 'DESC' ? 'DESC' : 'ASC';
+
+        $sql = "SELECT * FROM {$table} {$where} ORDER BY {$order_by} {$order}";
+
+        return $wpdb->get_results( $sql );
+    }
+
+    public static function paginate($table, $where = "WHERE 1=1", $orderby = "id DESC", $per_page = 20) {
+        global $wpdb;
+
+        $page = isset($_GET['paged']) ? max(1, intval($_GET['paged'])) : 1;
+        $offset = ($page - 1) * $per_page;
+
+        $sql = "
+            SELECT SQL_CALC_FOUND_ROWS *
+            FROM {$table}
+            {$where}
+            ORDER BY {$orderby}
+            LIMIT {$offset}, {$per_page}
+        ";
+
+        $items = $wpdb->get_results($sql);
+        $total = $wpdb->get_var("SELECT FOUND_ROWS()");
+
+        return [
+            'items'     => $items,
+            'total'     => $total,
+            'per_page'  => $per_page,
+            'current'   => $page,
+            'max_pages' => ceil($total / $per_page),
+        ];
+    }
+
+
 }
