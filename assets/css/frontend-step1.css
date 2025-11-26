@@ -1,0 +1,280 @@
+/* -------------------------------------------------
+   STEP 1 PAGE ONLY
+--------------------------------------------------*/
+.tm-order-page.tm-step1 {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 15px 60px;
+  box-sizing: border-box;
+}
+
+/* --------- EXACT NOMINUS 3 STEP BAR --------- */
+.tm-progress {
+  width: 100%;
+  max-width: 720px;
+  margin: 10px auto 28px;
+  position: relative;
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.tm-progress-line {
+  position: absolute;
+  top: 10px;
+  left: 8%;
+  right: 8%;
+  height: 3px;
+  background: #d7e3fb;
+  z-index: 1;
+}
+
+.tm-progress-step {
+  text-align: center;
+  position: relative;
+  width: 33.33%;
+  font-size: 13px;
+  color: #8ca2d3;
+  font-weight: 600;
+}
+
+.tm-progress-step .dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #d7e3fb;
+  border: 3px solid #d7e3fb;
+  margin: 0 auto;
+  display: block;
+  position: relative;
+  z-index: 2;
+  margin-bottom: 6px;
+}
+
+.tm-progress-step.is-active {
+  color: #0b4bcc;
+  font-weight: 700;
+}
+.tm-progress-step.is-active .dot {
+  background: #0b4bcc;
+  border-color: #0b4bcc;
+}
+
+/* ---------- LAYOUT ---------- */
+.tm-step-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 22px;
+  align-items: start;
+}
+
+.tm-step-card {
+  background: #fff;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.tm-step-header {
+  background: #dbe8ff;
+  padding: 18px 20px;
+  text-align: center;
+  border-bottom: 1px solid #c7d5f4;
+}
+
+.tm-step-header h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0a3ea8;
+}
+
+.tm-step-header p {
+  margin: 0;
+  font-size: 13px;
+  color: #0a3ea8;
+}
+
+.tm-step-body {
+  padding: 18px 20px 20px;
+}
+
+.tm-field {
+  margin-bottom: 18px;
+}
+
+.tm-field-label {
+  font-weight: 700;
+  color: #0a3ea8;
+  margin-bottom: 6px;
+  display: block;
+  font-size: 14px;
+}
+
+.tm-field small {
+  font-size: 12px;
+  color: #3c4a66;
+}
+
+/* Trademark Type cards */
+.tm-type-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.tm-type-card {
+  border: 1px solid #d9d9d9;
+  background: #f5f5f5;
+  padding: 12px 10px 10px;
+  cursor: pointer;
+  position: relative;
+  min-height: 145px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.tm-type-card input[type="radio"] {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  margin: 0;
+}
+
+/* ✅ FIX vertical alignment between radio + title */
+.tm-type-title {
+  font-weight: 700;
+  color: #0a3ea8;
+  font-size: 12px;
+  padding-left: 22px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  min-height: 16px;
+  line-height: 1.2;
+}
+
+.tm-type-card.is-active {
+  border-color: #0a3ea8;
+  background: #eef4ff;
+}
+
+.tm-type-preview {
+  background: #eef3fb;
+  padding: 20px;
+  /* height: 90px; */
+  /* display: flex;
+  align-items: center;
+  justify-content: center; */
+}
+
+.tm-preview-text {
+  font-weight: 800;
+  color: #3b77ff;
+  font-style: italic;
+}
+
+/* Inputs */
+#tm-text,
+#tm-goods {
+  width: 100%;
+  border: 1px solid #cfd8ea;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+#tm-goods {
+  min-height: 110px;
+  resize: vertical;
+}
+
+/* Upload box */
+.tm-upload-box {
+  border: 2px dashed #c9d7f7;
+  background: #f8fbff;
+  padding: 14px;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.tm-upload-box.is-dragover {
+  background: #e8f0ff;
+  border-color: #0a3ea8;
+}
+
+.tm-upload-inner .tm-upload-icon {
+  font-size: 22px;
+  margin-bottom: 6px;
+  color: #0a3ea8;
+}
+
+.tm-upload-preview img {
+  max-width: 160px;
+  max-height: 120px;
+  display: block;
+  margin: 0 auto 8px;
+}
+
+.tm-remove-logo {
+  background: #e74c3c;
+  color: #fff;
+  border: 0;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+/* Summary card */
+.tm-summary-card {
+  border: 1px solid #d9d9d9;
+  background: #fff;
+}
+
+.tm-summary-head {
+  background: #062d74;
+  color: #fff;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.tm-summary-body {
+  padding: 12px;
+  font-size: 13px;
+}
+
+.tm-btn-primary {
+  width: 100%;
+  background: #0a5ad5;
+  color: #fff;
+  border: 0;
+  padding: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  border-radius: 6px;
+  margin-top: 12px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .tm-step-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .tm-type-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tm-progress {
+    max-width: 100%;
+  }
+}

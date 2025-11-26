@@ -1,0 +1,272 @@
+/* ===========================
+   GLOBAL MODAL CONTROLLER
+=========================== */
+body.tm-modal-open {
+  overflow: hidden;
+}
+
+/* ===========================
+   MODAL WRAPPER
+=========================== */
+.tm-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.tm-modal.tm-modal-visible {
+  display: block;
+  opacity: 1;
+}
+
+/* ===========================
+   BACKDROP
+=========================== */
+.tm-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+/* ===========================
+   DIALOG
+=========================== */
+.tm-modal-dialog {
+  position: relative;
+  max-width: 650px;
+  margin: 60px auto;
+  background: #fff;
+  padding: 25px 35px;
+  border-radius: 6px;
+  z-index: 2;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.25);
+  animation: tmModalFadeUp 0.28s ease-out;
+  height: auto !important;
+  max-height: 90vh; /* fits screen height */
+  overflow-y: auto; /* scroll modal */
+}
+
+@keyframes tmModalFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===========================
+   CLOSE BUTTON
+=========================== */
+.tm-modal-close {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  font-size: 26px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+}
+
+.tm-modal-close:hover {
+  color: #000;
+}
+
+/* ===========================
+   TITLES & TEXT
+=========================== */
+.tm-modal-title {
+  font-size: 24px !important;
+  font-weight: 800 !important;
+  margin-bottom: 5px !important;
+}
+
+.tm-modal-subtitle {
+  color: #555;
+  margin-bottom: 15px;
+}
+
+.tm-modal-currency-note {
+  font-size: 13px;
+  margin-bottom: 20px;
+  text-align: right;
+  color: #444;
+}
+
+/* ===========================
+   TABS
+=========================== */
+.tm-modal-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.tm-prices-tab {
+  padding: 8px 18px;
+  border: 1px solid #ddd;
+  background: #f5f5f5;
+  cursor: pointer;
+  font-weight: 600;
+  border-radius: 4px;
+  font-size: 16px !important;
+}
+
+.tm-prices-tab.is-active {
+  background: #1a73e8;
+  color: #fff;
+  border-color: #1a73e8;
+}
+
+/* ===========================
+   PANELS
+=========================== */
+.tm-prices-panel {
+  display: none;
+}
+
+.tm-prices-panel.is-active {
+  display: block;
+}
+
+.tm-prices-step-card {
+  border: 1px solid #dcdcdc;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 18px;
+}
+
+.tm-prices-step-card h3 {
+  margin: 0 0 10px;
+  font-size: 22px !important;
+}
+
+.tm-prices-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.tm-prices-row:last-child {
+  border-bottom: none;
+}
+
+.tm-no-prices {
+  color: #777;
+  font-style: italic;
+  margin: 15px 0;
+}
+
+/* ===========================
+   FOOTER
+=========================== */
+.tm-modal-footnote {
+  margin-top: 15px;
+  font-size: 14px;
+  text-align: left;
+}
+
+/* SERVICE CONDITIONS */
+.tm-service-conditions-footer {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.tm-btn-primary {
+  background: #1a73e8;
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+.tm-btn-primary:hover {
+  background: #0f5dc0;
+}
+
+/* -----------------------------
+   Modal Stacking (Professional)
+------------------------------ */
+
+/* Base modal z-index */
+.tm-modal {
+  z-index: 9990;
+}
+
+/* When visible */
+.tm-modal.tm-modal-visible {
+  display: block;
+}
+
+/* Service Conditions should always appear ABOVE price modal */
+#tm-service-conditions-modal {
+  z-index: 10000;
+}
+
+/* Darker backdrop for service modal */
+#tm-service-conditions-modal .tm-modal-backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+/* ---------------------------------------
+   FIX 2: MOBILE RESPONSIVE SPACING
+---------------------------------------- */
+@media (max-width: 640px) {
+  .tm-modal-dialog {
+    width: 90% !important;
+    padding: 18px !important;
+    max-height: 85vh !important;
+    margin: 20px auto !important;
+  }
+
+  .tm-modal-title {
+    font-size: 20px !important;
+  }
+
+  .tm-modal-subtitle,
+  .tm-modal-currency-note {
+    font-size: 14px !important;
+  }
+
+  .tm-modal-tabs {
+    flex-wrap: wrap !important;
+    gap: 5px !important;
+  }
+
+  .tm-prices-tab {
+    flex: 1 1 45%;
+    text-align: center;
+    font-size: 14px !important;
+    padding: 8px !important;
+  }
+
+  .tm-prices-row {
+    flex-direction: column !important;
+    gap: 6px !important;
+  }
+
+  .tm-prices-step-card h3 {
+    font-size: 18px !important;
+  }
+
+  .tm-modal-close {
+    font-size: 22px !important;
+  }
+}
+
+/* ---------------------------------------
+   FIX 3: EXTRA SMALL HEIGHT DEVICES
+---------------------------------------- */
+@media (max-height: 650px) {
+  .tm-modal-dialog {
+    max-height: 80vh !important;
+  }
+}

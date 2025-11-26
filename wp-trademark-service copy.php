@@ -6,9 +6,12 @@
  * Author:            Md. Sohanur Rahman Sihab
  * Text Domain:       wp-tms-nexilup
  * Domain Path:       /languages
+ * wp-trademark-service
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
 
 /**
  * Define constants
@@ -17,11 +20,12 @@ define( 'WP_TMS_NEXILUP_VERSION', '1.0.0' );
 define( 'WP_TMS_NEXILUP_PLUGIN_FILE', __FILE__ );
 define( 'WP_TMS_NEXILUP_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'WP_TMS_NEXILUP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-define( 'WP_TMS_NEXILUP_URL', plugin_dir_url( __FILE__ ) );
-define('TM_MASTER_PRODUCT_ID', 2905);
+define( 'WP_TMS_NEXILUP_URL', plugin_dir_url( __FILE__ ) ); // <-- REQUIRED
+
 
 /**
- * Load activation/deactivation deps early
+ * Load only activation/deactivation dependencies early
+ * (avoid unexpected output during activation)
  */
 require_once WP_TMS_NEXILUP_PLUGIN_PATH . 'includes/class-tm-activator.php';
 require_once WP_TMS_NEXILUP_PLUGIN_PATH . 'includes/class-tm-deactivator.php';
@@ -41,6 +45,7 @@ function wp_tms_nexilup_activate() {
 
     // Add rewrite rules and flush once
     TM_Rewrite::routes();
+    TM_Router::init();
     flush_rewrite_rules();
 }
 register_activation_hook( __FILE__, 'wp_tms_nexilup_activate' );
@@ -55,16 +60,21 @@ function wp_tms_nexilup_deactivate() {
 register_deactivation_hook( __FILE__, 'wp_tms_nexilup_deactivate' );
 
 /**
- * Bootstrap plugin
+ * Bootstrap plugin (runs every request after activation)
  */
 function wp_tms_nexilup_init() {
 
+    // Load textdomain
     load_plugin_textdomain(
         'wp-tms-nexilup',
         false,
         dirname( plugin_basename( __FILE__ ) ) . '/languages'
     );
 
+    /**
+     * Load all other core classes here
+     * (safe after activation)
+     */
     require_once WP_TMS_NEXILUP_PLUGIN_PATH . 'includes/class-tm-admin.php';
     require_once WP_TMS_NEXILUP_PLUGIN_PATH . 'includes/class-tm-frontend.php';
     require_once WP_TMS_NEXILUP_PLUGIN_PATH . 'includes/class-tm-woocommerce.php';
@@ -73,13 +83,15 @@ function wp_tms_nexilup_init() {
     require_once WP_TMS_NEXILUP_PLUGIN_PATH . 'includes/class-tm-service-conditions.php';
     require_once WP_TMS_NEXILUP_PLUGIN_PATH . 'includes/class-tm-trademarks.php';
     require_once WP_TMS_NEXILUP_PLUGIN_PATH . 'includes/class-tm-ajax.php';
+    require_once WP_TMS_NEXILUP_PLUGIN_PATH . 'includes/class-tm-router.php';
     require_once WP_TMS_NEXILUP_PLUGIN_PATH . 'includes/class-tm-service-form.php';
-    require_once WP_TMS_NEXILUP_PLUGIN_PATH . 'includes/ajax-step-flow.php';
-    require_once WP_TMS_NEXILUP_PLUGIN_PATH . 'includes/class-tm-upload.php';
 
+    // Core modules init
     TM_Admin::init();
     TM_Frontend::init();
+    TM_Router::init();
 
+    // WooCommerce module
     if ( class_exists( 'WooCommerce' ) ) {
         TM_WooCommerce::init();
     }
@@ -89,12 +101,8 @@ function wp_tms_nexilup_init() {
     TM_Service_Conditions::init();
     TM_Trademarks::init();
     TM_Ajax::init();
-    TM_Upload::init();
-
-
-    // IMPORTANT: only one router system
-    TM_Rewrite::init();
-    TM_Pages::init();
+    TM_Rewrite::init(); // rewrite always active after plugin load
+    TM_Pages::init();   // optional placeholder for future
 }
 add_action( 'plugins_loaded', 'wp_tms_nexilup_init' );
 
@@ -102,8 +110,10 @@ add_action( 'plugins_loaded', 'wp_tms_nexilup_init' );
  * Add settings link on plugin list
  */
 function wp_tms_nexilup_settings_link( $links ) {
+
     $settings_url = admin_url( 'admin.php?page=tm-dashboard' );
     $settings_link = '<a href="' . esc_url( $settings_url ) . '">' . __( 'Dashboard', 'wp-tms-nexilup' ) . '</a>';
+
     array_unshift( $links, $settings_link );
     return $links;
 }

@@ -1,0 +1,21 @@
+.tm-status-badge {
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #fff;
+}
+.tm-status-pending_payment {
+  background: #ca8a04;
+}
+.tm-status-paid {
+  background: #0284c7;
+}
+.tm-status-in_process {
+  background: #7c3aed;
+}
+.tm-status-completed {
+  background: #16a34a;
+}
+.tm-status-cancelled {
+  background: #dc2626;
+}

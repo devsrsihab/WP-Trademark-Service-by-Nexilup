@@ -1,0 +1,286 @@
+/* ------------ 3 STEP PROGRESS BAR ------------ */
+.tm-progress {
+  width: 100%;
+  max-width: 720px;
+  margin: 20px auto 30px;
+  position: relative;
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.tm-progress-line {
+  position: absolute;
+  top: 10px;
+  left: 8%;
+  right: 8%;
+  height: 3px;
+  background: #d7e3fb;
+  z-index: 1;
+}
+
+.tm-progress-step {
+  text-align: center;
+  position: relative;
+  width: 33.33%;
+  font-size: 13px;
+  color: #8ca2d3;
+  font-weight: 600;
+}
+
+.tm-progress-step .dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #d7e3fb;
+  border: 3px solid #d7e3fb;
+  margin: 0 auto 6px;
+  display: block;
+  position: relative;
+  z-index: 2;
+}
+
+.tm-progress-step.is-active {
+  color: #0b4bcc;
+  font-weight: 700;
+}
+
+.tm-progress-step.is-active .dot {
+  background: #0b4bcc;
+  border-color: #0b4bcc;
+}
+
+/* ------------ PAGE WRAPPER ------------ */
+.tm-order-page.tm-step3 {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto 60px;
+  padding: 20px 15px 40px;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* ------------ MAIN CARD CONTAINER ------------ */
+.tm-step3-container {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 28px 24px 32px;
+  box-shadow: 0 10px 30px rgba(15, 35, 75, 0.12);
+}
+
+/* ------------ SUCCESS STRIP ------------ */
+.tm-success-message {
+  padding: 14px 18px;
+  border-radius: 10px;
+  background: #e8fff0;
+  border-left: 4px solid #28a745;
+  margin-bottom: 22px;
+}
+
+.tm-success-message h2 {
+  margin: 0 0 4px;
+  font-size: 22px;
+  font-weight: 800;
+  color: #13652d;
+}
+
+.tm-success-message p {
+  margin: 0;
+  font-size: 14px;
+  color: #3f4b5a;
+}
+
+/* ------------ BOX TITLES ------------ */
+.tm-box-title {
+  margin: 0 0 14px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0a3ea8;
+}
+
+/* ------------ ORDER META (top summary) ------------ */
+.tm-order-box {
+  margin-top: 12px;
+  padding: 18px 18px 16px;
+  background: #f8f9ff;
+  border-radius: 12px;
+}
+
+.tm-order-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px 24px;
+}
+
+.tm-meta-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.tm-meta-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #7a879c;
+  margin-bottom: 2px;
+}
+
+.tm-meta-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #232b3b;
+}
+
+/* ------------ ITEMS (trademark details) ------------ */
+.tm-order-items {
+  margin-top: 26px;
+}
+
+.tm-item {
+  padding: 16px 18px;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e3e7f2;
+  margin-bottom: 14px;
+}
+
+.tm-item-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.tm-item-text {
+  flex: 1;
+}
+
+.tm-item-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #0a3ea8;
+  text-transform: uppercase;
+}
+
+.tm-item-row {
+  display: flex;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.tm-item-row .label {
+  width: 130px;
+  font-weight: 600;
+  color: #52607c;
+}
+
+.tm-item-row .value {
+  flex: 1;
+  color: #1d2736;
+}
+
+.tm-item-logo img {
+  max-width: 120px;
+  border-radius: 8px;
+  border: 1px solid #e1e4ef;
+}
+
+/* ------------ TOTALS + ADDRESS GRID ------------ */
+.tm-bottom-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 22px;
+  margin-top: 30px;
+}
+
+.tm-total-box,
+.tm-address-box {
+  padding: 18px 18px 16px;
+  background: #f8f9ff;
+  border-radius: 12px;
+}
+
+.tm-totals-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.tm-totals-table th,
+.tm-totals-table td {
+  padding: 6px 4px;
+  text-align: left;
+}
+
+.tm-totals-table th {
+  font-weight: 600;
+  color: #4b5670;
+}
+
+.tm-totals-table td {
+  text-align: right;
+  color: #1f2737;
+}
+
+.tm-totals-table .tm-grand-total th,
+.tm-totals-table .tm-grand-total td {
+  padding-top: 10px;
+  border-top: 1px solid #d6ddf0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.tm-address {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #232b3b;
+}
+
+/* ------------ NEXT STEPS ------------ */
+.tm-next-steps {
+  margin-top: 26px;
+  padding-top: 16px;
+  border-top: 1px dashed #dde2f1;
+}
+
+.tm-next-steps p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #444f63;
+}
+
+/* ------------ RESPONSIVE ------------ */
+@media (max-width: 900px) {
+  .tm-bottom-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .tm-step3-container {
+    padding: 20px 16px 24px;
+  }
+
+  .tm-item-main {
+    flex-direction: column;
+  }
+
+  .tm-item-row .label {
+    width: 115px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tm-progress {
+    max-width: 100%;
+  }
+
+  .tm-progress-step span:last-child {
+    font-size: 11px;
+  }
+
+  .tm-success-message h2 {
+    font-size: 19px;
+  }
+}

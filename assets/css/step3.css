@@ -1,0 +1,38 @@
+.tm-step3-container {
+  max-width: 760px;
+  margin: 40px auto;
+  padding: 30px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.tm-success-message {
+  font-size: 18px;
+  padding: 12px;
+  background: #e0ffe6;
+  border-left: 4px solid #2ecc71;
+  border-radius: 6px;
+}
+
+.tm-order-box,
+.tm-order-items {
+  margin-top: 30px;
+  padding: 20px;
+  background: #f8f8f8;
+  border-radius: 10px;
+}
+
+.tm-item {
+  padding: 15px;
+  background: #fff;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  border: 1px solid #e6e6e6;
+}
+
+.tm-logo {
+  width: 120px;
+  margin-top: 10px;
+  border-radius: 6px;
+}

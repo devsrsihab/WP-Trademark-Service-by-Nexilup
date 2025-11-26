@@ -12,6 +12,18 @@ class TM_Countries {
         add_action('wp_ajax_tm_bulk_add_countries', [__CLASS__, 'bulk_import']);
     }
 
+    public static function get_id_by_iso($iso) {
+        global $wpdb;
+
+        return $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT id FROM {$wpdb->prefix}tm_countries WHERE iso_code = %s",
+                $iso
+            )
+        );
+    }
+
+
     /**
      * Fetch countries for initial table
      */

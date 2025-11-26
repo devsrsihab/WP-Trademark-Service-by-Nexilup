@@ -1,0 +1,144 @@
+/* ---------------------------------------------
+   Elementor Theme-Friendly Variables
+---------------------------------------------- */
+:root {
+  --tm-primary: var(--e-global-color-primary, #1a73e8);
+  --tm-primary-hover: var(--e-global-color-secondary, #0f5dc0);
+  --tm-text: var(--e-global-color-text, #1d1d1d);
+  --tm-text-light: var(--e-global-color-muted, #666);
+  --tm-border: #dce3ef;
+}
+
+/* ---------------------------------------------
+   PAGE WRAPPER
+---------------------------------------------- */
+.tm-country-single-page {
+  max-width: 1100px;
+  margin: 40px auto 60px;
+  padding: 0 15px;
+}
+
+.tm-country-header h1 {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--tm-primary);
+  text-align: center;
+}
+
+.tm-country-meta {
+  font-size: 15px;
+  color: var(--tm-text-light);
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* ---------------------------------------------
+   STEP BLOCK
+---------------------------------------------- */
+.tm-nominus-step {
+  margin: 50px 0;
+}
+
+.tm-nominus-step-title {
+  font-size: 28px !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  color: #1d1d1d !important;
+  margin-bottom: 25px !important;
+}
+
+/* Flex layout */
+.tm-nominus-step-inner {
+  display: flex;
+  gap: 35px;
+  align-items: flex-start;
+  background: #f7f6f6;
+  padding: 35px;
+  border-radius: 6px;
+}
+
+/* Image */
+.tm-nominus-step-image img {
+  width: 300px;
+  border: 2px solid #cde1ff;
+  padding: 10px;
+  border-radius: 4px;
+  background: #f8fbff;
+}
+
+/* Content */
+.tm-nominus-step-content {
+  flex: 1;
+  margin-left: 60px;
+}
+
+.tm-nominus-top-text {
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 15px;
+  color: var(--tm-text);
+}
+
+.tm-nominus-bullets {
+  padding-left: 20px;
+  margin-bottom: 18px;
+}
+
+.tm-nominus-bullets li {
+  font-size: 14px;
+  margin-bottom: 8px;
+  list-style-type: square;
+  color: #333;
+}
+
+/* Buttons */
+.tm-nominus-step-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.tm-nominus-order-btn {
+  background: var(--tm-primary);
+  padding: 8px 26px;
+  color: #fff !important;
+  border-radius: 4px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: 0.2s ease;
+}
+
+.tm-nominus-order-btn:hover {
+  background: var(--tm-primary-hover);
+}
+
+.tm-nominus-prices-link {
+  font-size: 14px;
+  color: var(--tm-primary);
+  text-decoration: none;
+}
+
+.tm-nominus-prices-link:hover {
+  text-decoration: underline;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .tm-nominus-step-inner {
+    flex-direction: column;
+    text-align: center;
+    padding: 25px;
+  }
+
+  .tm-nominus-step-image img {
+    margin: 0 auto;
+    width: 60%;
+  }
+
+  .tm-nominus-step-actions {
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+  }
+}

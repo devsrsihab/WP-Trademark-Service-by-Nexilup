@@ -60,7 +60,22 @@ class TM_Admin {
             'tm-settings',
             array( __CLASS__, 'render_settings_page' )
         );
+        add_submenu_page(
+            'tm-dashboard',
+            __( 'Trademarks', 'wp-tms-nexilup' ),
+            __( 'Trademarks', 'wp-tms-nexilup' ),
+            'manage_options',
+            'tm-trademarks',
+            array( __CLASS__, 'render_trademarks_page' )
+        );
+
     }
+
+
+    public static function render_trademarks_page() {
+     self::load_template('trademarks.php');
+    }
+
 
     // Enqueue admin assets
     public static function enqueue_assets( $hook ) {

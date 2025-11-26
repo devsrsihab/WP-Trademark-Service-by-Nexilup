@@ -13,6 +13,7 @@ class TM_Database {
         'owner_profiles'     => 'tm_owner_profiles',
         'trademarks'         => 'tm_trademarks',
         'trademark_classes'  => 'tm_trademark_classes',
+        'trademark_files'    => 'tm_trademark_files',
     ];
 
     /**
@@ -162,6 +163,27 @@ class TM_Database {
             KEY trademark_id (trademark_id)
         ) $charset;";
 
+
+
+        /* ============================================================
+             FILE TABLE
+        ============================================================ */
+
+        $files_table = self::table_name('trademark_files');
+
+        $sql7 = "CREATE TABLE `$files_table` (
+            `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            `trademark_id` BIGINT(20) UNSIGNED NOT NULL,
+            `file_name` VARCHAR(255) NOT NULL,
+            `file_url` VARCHAR(255) NOT NULL,
+            `file_type` VARCHAR(50) NOT NULL,
+            `uploaded_by` BIGINT(20) UNSIGNED NOT NULL,
+            `created_at` DATETIME NOT NULL,
+            PRIMARY KEY (`id`),
+            KEY `tm_tf_trademark_id` (`trademark_id`),
+            KEY `tm_tf_uploaded_by` (`uploaded_by`)
+        ) $charset;";
+
         // Run all SQL with dbDelta
         dbDelta($sql1);
         dbDelta($sql2);
@@ -169,6 +191,7 @@ class TM_Database {
         dbDelta($sql4);
         dbDelta($sql5);
         dbDelta($sql6);
+        dbDelta($sql7);
     }
 
 
