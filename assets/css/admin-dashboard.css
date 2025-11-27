@@ -57,3 +57,49 @@
 .tm-card a:hover {
   background: #135e96;
 }
+.tm-shortcodes-box {
+  margin-top: 40px;
+  padding: 25px;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.tm-shortcode-item {
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.tm-shortcode-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.tm-shortcode-item code {
+  background: #f7f7f9;
+  padding: 6px 10px;
+  border-radius: 5px;
+  border: 1px solid #e1e1e1;
+  display: inline-block;
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+.tm-shortcode-item p {
+  margin: 4px 0 8px;
+  font-size: 13px;
+  color: #666;
+}
+
+.tm-shortcode-item strong {
+  font-size: 12px;
+  color: #444;
+}
+
+.tm-shortcodes-note {
+  margin-top: 15px;
+  font-size: 12px;
+  color: #7a7a7a;
+}

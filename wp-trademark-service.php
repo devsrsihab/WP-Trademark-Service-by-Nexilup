@@ -18,7 +18,7 @@ define( 'WP_TMS_NEXILUP_PLUGIN_FILE', __FILE__ );
 define( 'WP_TMS_NEXILUP_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'WP_TMS_NEXILUP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'WP_TMS_NEXILUP_URL', plugin_dir_url( __FILE__ ) );
-define('TM_MASTER_PRODUCT_ID', 2905);
+define('TM_MASTER_PRODUCT_ID', 2984);
 
 /**
  * Load activation/deactivation deps early

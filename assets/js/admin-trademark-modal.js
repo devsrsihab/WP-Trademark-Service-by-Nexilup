@@ -1,61 +1,48 @@
 (function ($) {
-  /* -------------------------
-     OPEN MODAL + LOAD DETAILS
-  ------------------------- */
-  $(document).on("click", ".tm-view-details", function () {
-    const id = $(this).data("id");
+  // OPEN MODAL
+  $(document).on("click", ".tm-admin-view-btn", function () {
+    let id = $(this).data("id");
 
-    // Show modal properly
-    $("#tm-admin-trademark-modal").addClass("tm-show");
-    $("#tm-trademark-detail-content").html("Loading...");
+    $(".tm-admin-modal-overlay").fadeIn(150);
+
+    $("#tm-admin-modal-content").html("Loading…");
 
     $.post(
       TM_ADMIN_TRADEMARK_AJAX,
       {
-        action: "tm_get_trademark_details", // ✅ FIXED AJAX ACTION NAME
+        action: "tm_admin_get_trademark",
         id: id,
         nonce: TM_ADMIN_TRADEMARK_NONCE,
       },
       function (res) {
         if (res.success) {
-          $("#tm-trademark-detail-content").html(res.data.html);
-
-          // Load documents inside modal
-          loadDocs(id);
+          $("#tm-admin-modal-content").html(res.data.html);
         } else {
-          $("#tm-trademark-detail-content").html("<p>Error loading.</p>");
+          $("#tm-admin-modal-content").html("<p>Error loading details.</p>");
         }
       }
     );
+
+    // Load documents
+    setTimeout(() => loadDocs(id), 300);
   });
 
-  /* -------------------------
-         CLOSE MODAL
-  ------------------------- */
-  $(document).on("click", ".tm-close", function () {
-    $("#tm-admin-trademark-modal").removeClass("tm-show");
+  // CLOSE MODAL
+  $(document).on("click", ".tm-admin-modal-close", function () {
+    $(".tm-admin-modal-overlay").fadeOut(150);
   });
 
-  // Clicking outside modal closes
-  $(document).on("click", "#tm-admin-trademark-modal", function (e) {
-    if (e.target.id === "tm-admin-trademark-modal") {
-      $(this).removeClass("tm-show");
-    }
-  });
-
-  /* -------------------------
-     UPDATE STATUS
-  ------------------------- */
+  // Update status
   $(document).on("click", "#tm-admin-save-status", function () {
-    const id = $("#tm-admin-status").data("id");
-    const newStatus = $("#tm-admin-status").val();
+    let id = $("#tm-admin-status").data("id");
+    let status = $("#tm-admin-status").val();
 
     $.post(
       TM_ADMIN_TRADEMARK_AJAX,
       {
         action: "tm_admin_update_status",
         id: id,
-        status: newStatus,
+        status: status,
         nonce: TM_ADMIN_TRADEMARK_NONCE,
       },
       function (res) {
@@ -65,28 +52,26 @@
         }
 
         $("#tm-admin-status-msg").html(
-          "<span style='color:green;'>Status updated successfully!</span>"
+          "<span style='color:green;'>Status updated!</span>"
         );
 
-        // Update badge in table instantly
+        // Update badge in table
         $(`tr[data-id='${id}'] .tm-status-badge`)
           .removeClass()
-          .addClass("tm-status-badge tm-status-" + newStatus)
-          .text(newStatus.replace("_", " ").toUpperCase());
+          .addClass("tm-status-badge tm-status-" + status)
+          .text(status.replace("_", " ").toUpperCase());
       }
     );
   });
 
-  /* -------------------------
-          UPLOAD DOC
-  ------------------------- */
+  // Upload Document
   $(document).on("click", "#tm-doc-upload-btn", function () {
     let file = $("#tm-doc-file")[0].files[0];
-    let docType = $("#tm-doc-type").val();
+    let type = $("#tm-doc-type").val();
     let id = $("#tm-admin-status").data("id");
 
     if (!file) {
-      alert("Please select a file.");
+      alert("Select a file first.");
       return;
     }
 
@@ -94,7 +79,7 @@
     formData.append("action", "tm_admin_upload_doc");
     formData.append("nonce", TM_ADMIN_TRADEMARK_NONCE);
     formData.append("file", file);
-    formData.append("type", docType);
+    formData.append("type", type);
     formData.append("id", id);
 
     $.ajax({
@@ -115,9 +100,6 @@
     });
   });
 
-  /* -------------------------
-        LOAD DOCUMENTS
-  ------------------------- */
   function loadDocs(id) {
     $.post(
       TM_ADMIN_TRADEMARK_AJAX,

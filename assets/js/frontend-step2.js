@@ -164,4 +164,47 @@
       }
     );
   });
+
+  jQuery(function ($) {
+    $("input[name='tm_payment_gateway']").on("change", function () {
+      let gateway = $(this).val();
+
+      $("#tm-payment-fields").html("<p>Loading payment details...</p>");
+
+      $.post(
+        tm_ajax.ajax_url,
+        {
+          action: "tm_load_payment_fields",
+          gateway: gateway,
+          nonce: tm_ajax.nonce,
+        },
+        function (res) {
+          console.log("res", res);
+
+          if (res.success) {
+            $("#tm-payment-fields").html(res.data.html);
+          } else {
+            $("#tm-payment-fields").html(
+              "<p style='color:red'>" + res.data.message + "</p>"
+            );
+          }
+        }
+      );
+    });
+  });
+
+  jQuery(document).ready(function ($) {
+    $(document).on("change", "input[name='tm_payment_gateway']", function () {
+      let gateway = $(this).val();
+
+      $(".tm-gateway-fields").hide(); // hide all
+      $("#tm-gateway-" + gateway).show(); // show selected
+    });
+
+    // Show first gateway on load
+    let first = $("input[name='tm_payment_gateway']").first().val();
+    if (first) {
+      $("#tm-gateway-" + first).show();
+    }
+  });
 })(jQuery);

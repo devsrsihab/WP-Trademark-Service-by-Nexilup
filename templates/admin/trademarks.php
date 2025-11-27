@@ -48,7 +48,7 @@ $nonce = wp_create_nonce('tm_admin_trademark_nonce');
                 </td>
 
                 <td>
-                    <button class="button tm-view-details" data-id="<?php echo $t->id; ?>">View</button>
+                    <button class="button tm-admin-view-btn" data-id="<?php echo $t->id; ?>">View</button>
                 </td>
             </tr>
         <?php endforeach; ?>

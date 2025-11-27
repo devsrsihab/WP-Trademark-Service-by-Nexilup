@@ -9,6 +9,10 @@ jQuery(function ($) {
     $("#tm-user-modal").fadeOut(200);
   });
 
+  $(".tm-close").on("click", function () {
+    $("#tm-admin-trademark-modal").fadeOut(200);
+  });
+
   // click "View"
   $(document).on("click", ".tm-user-view", function () {
     let id = $(this).data("id");

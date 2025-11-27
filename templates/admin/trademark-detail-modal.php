@@ -1,12 +1,15 @@
-<div id="tm-admin-trademark-modal" class="tm-modal">
-    <div class="tm-modal-content tm-modal-wide">
-        <span class="tm-close">&times;</span>
+<div class="tm-admin-modal-overlay">
 
-        <h2>Trademark Details</h2>
+    <div class="tm-admin-modal-box">
 
-        <div id="tm-trademark-detail-content">
-            <!-- Ajax Loaded Content -->
-            Loading...
+        <button class="tm-admin-modal-close">&times;</button>
+
+        <h2 class="tm-admin-modal-title">Trademark Details</h2>
+
+        <div id="tm-admin-modal-content">
+            Loading…
         </div>
+
     </div>
+
 </div>

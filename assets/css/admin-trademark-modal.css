@@ -1,0 +1,132 @@
+/* ================================
+   ADMIN TRADEMARK MODAL (NO CONFLICT)
+=================================== */
+
+.tm-admin-modal-overlay {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 999999;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.tm-admin-modal-box {
+  background: #fff;
+  width: 700px;
+  max-width: 95%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 25px;
+  border-radius: 8px;
+  position: relative;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+  margin: auto;
+}
+
+.tm-admin-modal-close {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: #333;
+}
+
+.tm-admin-modal-close:hover {
+  color: #d00;
+}
+
+.tm-admin-modal-title {
+  font-size: 22px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+/* Modal Header */
+.tm-admin-modal-header {
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 12px;
+  margin-bottom: 15px;
+}
+
+.tm-admin-modal-header h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: #1d2327;
+}
+
+/* Main Section */
+.tm-admin-modal-section {
+  margin-bottom: 25px;
+}
+
+.tm-section-title {
+  font-size: 18px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+/* Info Grid */
+.tm-admin-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px 25px;
+}
+
+.tm-admin-info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.tm-admin-info-item .label {
+  font-weight: 600;
+  color: #50575e;
+  margin-bottom: 3px;
+}
+
+.tm-admin-info-item .value {
+  font-size: 15px;
+  color: #1d2327;
+}
+
+.tm-admin-info-item.tm-full-width {
+  grid-column: 1 / -1;
+}
+
+/* Logo Styling */
+.tm-admin-logo-img {
+  max-width: 150px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  margin-top: 5px;
+}
+
+/* Documents List */
+.tm-doc-list {
+  background: #f6f7f7;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .tm-admin-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tm-admin-modal-inner {
+    width: 100%;
+    padding: 18px;
+  }
+}

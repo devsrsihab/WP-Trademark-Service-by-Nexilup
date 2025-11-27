@@ -1,0 +1,322 @@
+/* =====================================
+   1. Theme Variables & Base Styles
+   ===================================== */
+:root {
+  /* Primary Colors (Default: Blue) */
+  --primary-color: #2d338c; /* Used for buttons, active page, country links */
+  --primary-hover-color: #1a4cd7; /* Slightly darker for hover states */
+  --secondary-color: #008ed9; /* Used for main table header background */
+  --tertiary-color: #8cb5ff; /* Used for sub-header background */
+
+  /* Neutral Colors */
+  --text-primary-color: #222; /* Strong text color */
+  --text-secondary-color: #fff; /* White text (on colored backgrounds) */
+  --table-border-color: #e3e3e3;
+  --table-even-row-bg: #f5faff; /* Light background for even rows */
+  --table-bg: #fff;
+}
+
+.tm-country-table-pro-wrap {
+  margin-top: 20px;
+  padding: 0 10px; /* Add slight padding for mobile viewports */
+}
+
+/* =====================================
+   2. Header & Search Layout
+   ===================================== */
+.tm-country-flag-wraper {
+  display: flex !important;
+  gap: 10px !important;
+  align-items: center !important;
+}
+
+.tm-ct-title {
+  font-size: clamp(24px, 5vw, 32px); /* Responsive font size */
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: var(--text-primary-color);
+}
+
+.tm-ct-search {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+  flex-direction: row; /* Default for larger screens */
+}
+
+.tm-ct-search input {
+  flex: 1;
+  padding: 12px;
+  font-size: 15px;
+  border-radius: 6px;
+  border: 1px solid var(--table-border-color);
+  min-width: 0; /* Important for flex items */
+}
+
+.tm-btn-blue {
+  background: var(--primary-color);
+  color: var(--text-secondary-color);
+  padding: 12px 22px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.tm-btn-blue:hover {
+  background: var(--primary-hover-color);
+}
+
+/* Make search stack on very small screens */
+@media (max-width: 480px) {
+  .tm-ct-search {
+    flex-direction: column;
+  }
+  .tm-btn-blue {
+    width: 100%;
+  }
+}
+
+/* =====================================
+   3. Table Styling
+   ===================================== */
+.tm-scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* Better scrolling on mobile */
+}
+
+.tm-pricing-table-pro {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--table-bg);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  min-width: 600px; /* Ensure table is wide enough to display content */
+}
+
+.tm-pricing-table-pro thead th {
+  background: var(--primary-color);
+
+  color: var(--text-secondary-color);
+  padding: 14px;
+  font-size: 15px;
+  text-align: center;
+}
+
+.tm-subhead-row th {
+  background: var(--tertiary-color);
+  color: var(--text-secondary-color);
+  font-size: 14px;
+  padding: 10px;
+}
+
+.tm-pricing-table-pro td {
+  padding: 14px;
+  border-bottom: 1px solid var(--table-border-color);
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-primary-color);
+}
+
+.tm-pricing-table-pro tbody tr:last-child td {
+  border-bottom: none; /* Clean up last row border */
+}
+
+.tm-pricing-table-pro tbody tr:nth-child(even) {
+  background: var(--table-even-row-bg);
+}
+
+/* Country Column */
+.tm-country-cell {
+  text-align: left;
+  padding-left: 15px;
+  white-space: nowrap; /* Prevent country name from wrapping */
+}
+
+.tm-country-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.tm-country-link:hover {
+  color: var(--primary-hover-color);
+  text-decoration: underline;
+}
+
+.tm-country-link strong {
+  font-size: 15px;
+  color: var(--text-primary-color);
+}
+
+.tm-flag-sm {
+  width: 26px;
+  height: 18px;
+  background-size: cover;
+  border-radius: 3px;
+  flex-shrink: 0; /* Prevent flag from shrinking */
+}
+
+/* =====================================
+   4. Pagination
+   ===================================== */
+.tm-ct-pagination {
+  text-align: center;
+  margin-top: 20px;
+  padding-bottom: 10px;
+}
+
+.tm-page {
+  padding: 8px 12px;
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  margin: 0 3px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block; /* Allows vertical padding/margin to work */
+  transition: background 0.2s ease, color 0.2s ease;
+  font-size: 14px;
+}
+
+.tm-page:hover:not(.active) {
+  background: rgba(36, 94, 234, 0.1); /* Slight hover effect */
+}
+
+.tm-page.active {
+  background: var(--primary-color);
+  color: var(--text-secondary-color);
+}
+
+/* FILTER BAR WRAPPER */
+.tm-filter-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f6f8fc;
+  padding: 18px 22px;
+  border-radius: 12px;
+  border: 1px solid #e5e9f2;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* LEFT SIDE */
+.tm-filter-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+/* RIGHT SIDE */
+.tm-filter-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* LABELS */
+.tm-filter-label {
+  font-weight: 600;
+  font-size: 15px;
+  color: #222;
+  margin-right: 5px;
+}
+
+/* SELECT */
+.tm-select {
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid #d0d7e6;
+  font-size: 14px;
+  min-width: 180px;
+  background: #fff;
+}
+
+/* RADIO BUTTONS */
+.tm-radio {
+  font-size: 15px;
+  color: #222;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* PRIMARY BUTTON */
+.tm-btn-primary {
+  background: linear-gradient(135deg, #003da5, #007bff);
+  padding: 10px 26px;
+  color: #fff !important;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s all ease;
+  display: inline-block;
+  text-transform: uppercase;
+}
+
+.tm-btn-primary:hover {
+  background: linear-gradient(135deg, #002d7f, #005fce);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 70, 180, 0.3);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .tm-filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tm-filter-left,
+  .tm-filter-right {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .tm-select {
+    width: 100%;
+  }
+
+  .tm-btn-primary {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+/* =====================================
+   5. Responsiveness for Table
+   ===================================== */
+/* Table is handled with overflow-x: auto, which is the best approach
+   for wide data tables on small screens, allowing the user to scroll horizontally.
+   We ensure a minimum width on the table itself.
+*/
+@media (max-width: 768px) {
+  .tm-pricing-table-pro {
+    /* Reduce min-width slightly if needed, but 600px is usually safe */
+    min-width: 550px;
+  }
+
+  .tm-pricing-table-pro thead th,
+  .tm-subhead-row th,
+  .tm-pricing-table-pro td {
+    padding: 10px 8px; /* Reduce padding for tighter fit */
+    font-size: 13px; /* Slightly smaller font */
+  }
+
+  .tm-country-cell {
+    padding-left: 10px;
+  }
+}

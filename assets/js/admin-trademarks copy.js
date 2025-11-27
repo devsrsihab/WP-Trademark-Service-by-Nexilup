@@ -1,54 +1,33 @@
 (function ($) {
-  /* -------------------------
-     OPEN MODAL + LOAD DETAILS
-  ------------------------- */
   $(document).on("click", ".tm-view-details", function () {
-    const id = $(this).data("id");
+    let id = $(this).data("id");
 
-    // Show modal properly
-    $("#tm-admin-trademark-modal").addClass("tm-show");
-    $("#tm-trademark-detail-content").html("Loading...");
+    $("#tm-admin-trademark-modal").fadeIn(200);
 
     $.post(
       TM_ADMIN_TRADEMARK_AJAX,
       {
-        action: "tm_get_trademark_details", // ✅ FIXED AJAX ACTION NAME
+        action: "tm_admin_get_trademark",
         id: id,
         nonce: TM_ADMIN_TRADEMARK_NONCE,
       },
       function (res) {
         if (res.success) {
           $("#tm-trademark-detail-content").html(res.data.html);
-
-          // Load documents inside modal
-          loadDocs(id);
         } else {
-          $("#tm-trademark-detail-content").html("<p>Error loading.</p>");
+          alert(res.data.message);
         }
       }
     );
   });
 
-  /* -------------------------
-         CLOSE MODAL
-  ------------------------- */
-  $(document).on("click", ".tm-close", function () {
-    $("#tm-admin-trademark-modal").removeClass("tm-show");
+  $(".tm-close").on("click", function () {
+    $("#tm-admin-trademark-modal").fadeOut(200);
   });
 
-  // Clicking outside modal closes
-  $(document).on("click", "#tm-admin-trademark-modal", function (e) {
-    if (e.target.id === "tm-admin-trademark-modal") {
-      $(this).removeClass("tm-show");
-    }
-  });
-
-  /* -------------------------
-     UPDATE STATUS
-  ------------------------- */
   $(document).on("click", "#tm-admin-save-status", function () {
-    const id = $("#tm-admin-status").data("id");
-    const newStatus = $("#tm-admin-status").val();
+    let id = $("#tm-admin-status").data("id");
+    let newStatus = $("#tm-admin-status").val();
 
     $.post(
       TM_ADMIN_TRADEMARK_AJAX,
@@ -77,9 +56,7 @@
     );
   });
 
-  /* -------------------------
-          UPLOAD DOC
-  ------------------------- */
+  // Upload document
   $(document).on("click", "#tm-doc-upload-btn", function () {
     let file = $("#tm-doc-file")[0].files[0];
     let docType = $("#tm-doc-type").val();
@@ -115,9 +92,6 @@
     });
   });
 
-  /* -------------------------
-        LOAD DOCUMENTS
-  ------------------------- */
   function loadDocs(id) {
     $.post(
       TM_ADMIN_TRADEMARK_AJAX,
@@ -135,4 +109,9 @@
       }
     );
   }
+
+  // load docs automatically when modal opens
+  $(document).on("click", ".tm-view-details", function () {
+    setTimeout(() => loadDocs($(this).data("id")), 300);
+  });
 })(jQuery);

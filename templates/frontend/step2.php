@@ -343,6 +343,22 @@ update_option('tm_last_country_id', $country_id);
             <?php endif; ?>
           </div>
 
+          <!-- Payment form container -->
+<div id="tm-payment-fields-wrap">
+    <?php
+    // Get available payment methods
+    $gateways = WC()->payment_gateways()->get_available_payment_gateways();
+
+    foreach ( $gateways as $gateway_id => $gateway ) {
+        echo '<div class="tm-gateway-fields" id="tm-gateway-'.esc_attr($gateway_id).'" style="display:none;">';
+        $gateway->payment_fields(); // Output the form fields
+        echo '</div>';
+    }
+    ?>
+</div>
+
+
+
           <button type="button" id="tm-proceed-checkout" class="tm-btn-primary">
             Proceed to Checkout
           </button>

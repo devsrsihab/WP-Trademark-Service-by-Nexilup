@@ -75,7 +75,8 @@ $order_urls = [
 ];
 
 /* STEP IMAGE */
-$step_image = esc_url(trailingslashit(wp_upload_dir()['baseurl']) . '2025/11/step_2.webp');
+// $step_image = WP_TMS_NEXILUP_PLUGIN_URL . 'assets/images/step.webp';
+$step_image = trailingslashit(WP_TMS_NEXILUP_PLUGIN_URL) . 'assets/img/step.webp';
 
 /* ============================================================
    BUILD FILTERED PRICE MATRIX FOR MODAL

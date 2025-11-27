@@ -9,10 +9,82 @@ class TM_Frontend {
         add_shortcode('tm_service_form', [__CLASS__, 'render_service_form']);
         add_shortcode('tm_my_trademarks', [__CLASS__, 'shortcode_my_trademarks']);
 
+        add_action('wp_ajax_tm_load_service_conditions', 'tm_load_service_conditions');
+        add_action('wp_ajax_nopriv_tm_load_service_conditions', 'tm_load_service_conditions');
+
         add_action('wp_enqueue_scripts', [__CLASS__, 'register_scripts']);
+        add_action("wp_ajax_tm_filter_country_table", [__CLASS__, "ajax_filter_table"]);
+        add_action("wp_ajax_nopriv_tm_filter_country_table", [__CLASS__, "ajax_filter_table"]);
+
+    }
+
+public static function ajax_filter_table() {
+
+    check_ajax_referer('tm_nonce', 'nonce');
+    global $wpdb;
+
+    $country = sanitize_text_field($_POST['country'] ?? '');
+    $type    = sanitize_text_field($_POST['type'] ?? 'word');
+
+    $where = "WHERE status = 1";
+
+    if ($country) {
+        $where .= $wpdb->prepare(" AND iso_code = %s", $country);
+    }
+
+    // Fetch filtered countries
+    $countries = $wpdb->get_results("
+        SELECT * FROM {$wpdb->prefix}tm_countries
+        $where
+        ORDER BY country_name ASC
+    ");
+
+    // Pass $type to partial
+    $selected_type = $type;
+
+    ob_start();
+    include WP_TMS_NEXILUP_PLUGIN_PATH . "templates/frontend/partials/table-body.php";
+    $html = ob_get_clean();
+
+    wp_send_json_success(['html' => $html]);
+}
+
+
+
+    function tm_load_service_conditions() {
+        check_ajax_referer('tm_nonce', 'nonce');
+
+        global $wpdb;
+        $table = TM_Database::table_name('service_conditions');
+        $country_id = intval($_POST['country_id']);
+
+        $rows = $wpdb->get_results(
+            $wpdb->prepare("SELECT * FROM $table WHERE country_id = %d ORDER BY step_number ASC", $country_id)
+        );
+
+        ob_start();
+        if ($rows) {
+            foreach ($rows as $sc) {
+                echo "<h3>Step {$sc->step_number}</h3>";
+                echo "<div class='sc-block'>" . wp_kses_post($sc->content) . "</div>";
+            }
+        } else {
+            echo "<p>No service conditions available.</p>";
+        }
+
+        wp_send_json_success(['html' => ob_get_clean()]);
     }
 
     public static function register_scripts() {
+
+        wp_enqueue_script('tm-country-filter-js');
+
+        wp_localize_script('tm-country-filter-js', 'tm_ajax', [
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce'    => wp_create_nonce('tm_nonce')
+        ]);
+
+
 
         wp_register_style(
             'tm-step3-css',
@@ -64,6 +136,12 @@ class TM_Frontend {
             ['tm-frontend-css'],
             WP_TMS_NEXILUP_VERSION
         );
+        wp_register_style(
+            'tm-country-table-css',
+            WP_TMS_NEXILUP_URL . 'assets/css/country-table-pro.css',
+            [],
+            WP_TMS_NEXILUP_VERSION
+        );
 
         wp_register_style(
             'tm-frontend-modal-css',
@@ -96,6 +174,11 @@ class TM_Frontend {
             true
         );
 
+        wp_localize_script('tm-step2-js', 'tm_ajax', [
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce'    => wp_create_nonce('tm_nonce')
+        ]);
+
         wp_register_script(
             'tm-my-trademarks-js',
             WP_TMS_NEXILUP_URL . 'assets/js/frontend-my-trademarks.js',
@@ -107,11 +190,12 @@ class TM_Frontend {
 
     public static function shortcode_country_table($atts) {
         $atts = shortcode_atts([
-            'per_page'    => 20,
+            'per_page'    => 10,
             'single_page' => ''
         ], $atts);
 
-        wp_enqueue_style('tm-frontend-css');
+        wp_enqueue_style('tm-frontend-flag'); 
+        wp_enqueue_style('tm-country-table-css');
 
         global $wpdb;
         $table = TM_Database::table_name('countries');

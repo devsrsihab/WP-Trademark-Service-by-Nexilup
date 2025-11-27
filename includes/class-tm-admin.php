@@ -9,9 +9,39 @@ class TM_Admin {
         if ( is_admin() ) {
             add_action( 'admin_menu', array( __CLASS__, 'register_menus' ) );
             add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
-            // Removed duplicate line
+            add_action('wp_ajax_tm_get_trademark_details', [__CLASS__, 'ajax_get_trademark_details']);
+
         }
     }
+
+
+    public static function ajax_get_trademark_details() {
+        check_ajax_referer('tm_admin_trademark_nonce', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => 'Unauthorized']);
+        }
+
+        $id = intval($_POST['id']);
+
+        global $wpdb;
+        $table = TM_Database::table_name('trademarks');
+
+        $t = $wpdb->get_row(
+            $wpdb->prepare("SELECT * FROM $table WHERE id=%d LIMIT 1", $id)
+        );
+
+        if (!$t) {
+            wp_send_json_error(['message' => 'Trademark not found']);
+        }
+
+        ob_start();
+        include WP_TMS_NEXILUP_PLUGIN_PATH . 'templates/admin/trademark-details.php';
+        $html = ob_get_clean();
+
+        wp_send_json_success(['html' => $html]);
+}
+
     
 
     public static function register_menus() {
@@ -52,14 +82,14 @@ class TM_Admin {
             array( __CLASS__, 'render_service_conditions_page' )
         );
 
-        add_submenu_page(
-            'tm-dashboard',
-            __( 'Settings', 'wp-tms-nexilup' ),
-            __( 'Settings', 'wp-tms-nexilup' ),
-            'manage_options',
-            'tm-settings',
-            array( __CLASS__, 'render_settings_page' )
-        );
+        // add_submenu_page(
+        //     'tm-dashboard',
+        //     __( 'Settings', 'wp-tms-nexilup' ),
+        //     __( 'Settings', 'wp-tms-nexilup' ),
+        //     'manage_options',
+        //     'tm-settings',
+        //     array( __CLASS__, 'render_settings_page' )
+        // );
         add_submenu_page(
             'tm-dashboard',
             __( 'Trademarks', 'wp-tms-nexilup' ),
@@ -80,58 +110,93 @@ class TM_Admin {
     // Enqueue admin assets
     public static function enqueue_assets( $hook ) {
 
-        // Load only on plugin pages
+        // Load only plugin pages
         if ( strpos( $hook, 'tm-' ) === false ) {
             return;
         }
 
-        // ========== CSS ==========
+        // ========== GLOBAL ADMIN CSS ==========
         wp_enqueue_style(
             'tm-admin-dashboard',
             WP_TMS_NEXILUP_PLUGIN_URL . 'assets/css/admin-dashboard.css',
-            array(),
+            [],
             WP_TMS_NEXILUP_VERSION
         );
 
-        // Load specific styles for Countries page
+        // ===============================
+        // LOAD FOR COUNTRIES PAGE
+        // ===============================
         if ( $hook === 'trademark-service_page_tm-countries' ) {
+
             wp_enqueue_style(
                 'tm-admin-countries',
-                WP_TMS_NEXILUP_PLUGIN_URL . 'assets/css/admin-countries.css', // Fixed: consistent naming
-                array(),
+                WP_TMS_NEXILUP_PLUGIN_URL . 'assets/css/admin-countries.css',
+                [],
                 WP_TMS_NEXILUP_VERSION
             );
 
             wp_enqueue_style(
                 'tm-countries-flags',
                 WP_TMS_NEXILUP_PLUGIN_URL . 'assets/css/country-flag.css',
-                array(),
-                WP_TMS_NEXILUP_VERSION
-            );
-            wp_enqueue_style(
-                'tm-admin-css',
-                WP_TMS_NEXILUP_PLUGIN_URL . 'assets/css/admin.css',
-                array(),
+                [],
                 WP_TMS_NEXILUP_VERSION
             );
 
-            // ========== JS ==========
+            wp_enqueue_style(
+                'tm-admin-css',
+                WP_TMS_NEXILUP_PLUGIN_URL . 'assets/css/admin.css',
+                [],
+                WP_TMS_NEXILUP_VERSION
+            );
+
             wp_enqueue_script(
                 'tm-admin-countries',
-                WP_TMS_NEXILUP_PLUGIN_URL . 'assets/js/admin-countries.js', // Fixed: consistent naming
-                array('jquery'),
+                WP_TMS_NEXILUP_PLUGIN_URL . 'assets/js/admin-countries.js',
+                ['jquery'],
                 WP_TMS_NEXILUP_VERSION,
                 true
             );
+
             wp_enqueue_script(
                 'tm-admin-countries-prices',
-                WP_TMS_NEXILUP_PLUGIN_URL . 'assets/js/admin-prices.js', // Fixed: consistent naming
-                array('jquery'),
+                WP_TMS_NEXILUP_PLUGIN_URL . 'assets/js/admin-prices.js',
+                ['jquery'],
                 WP_TMS_NEXILUP_VERSION,
                 true
             );
         }
+
+        // ===============================
+        // LOAD FOR TRADEMARKS PAGE (IMPORTANT)
+        // ===============================
+        if ( $hook === 'trademark-service_page_tm-trademarks' ) {
+
+            // Modal CSS
+            wp_enqueue_style(
+                'tm-admin-modal-css',
+                WP_TMS_NEXILUP_PLUGIN_URL . 'assets/css/admin-trademark-modal.css',
+                [],
+                WP_TMS_NEXILUP_VERSION
+            );
+
+            // Modal JS
+            wp_enqueue_script(
+                'tm-admin-modal-js',
+                WP_TMS_NEXILUP_PLUGIN_URL . 'assets/js/admin-trademark-modal.js',
+                ['jquery'],
+                WP_TMS_NEXILUP_VERSION,
+                true
+            );
+
+            // Localize ajax
+            wp_localize_script('tm-admin-modal-js', 'TM_ADMIN_MODAL', [
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce'    => wp_create_nonce('tm_admin_trademark_nonce')
+            ]);
+        }
+
     }
+
 
     public static function render_dashboard_page() {
         self::load_template( 'dashboard.php' );
@@ -149,9 +214,9 @@ class TM_Admin {
         self::load_template( 'service-conditions.php' );
     }
 
-    public static function render_settings_page() {
-        self::load_template( 'settings.php' );
-    }
+    // public static function render_settings_page() {
+    //     self::load_template( 'settings.php' );
+    // }
 
     /**
      * Template loader

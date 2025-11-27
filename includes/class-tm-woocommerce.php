@@ -30,7 +30,37 @@ class TM_WooCommerce {
         add_action('wp_ajax_tm_place_order', [ __CLASS__, 'ajax_place_order' ]);
         add_action('wp_ajax_nopriv_tm_place_order', [ __CLASS__, 'ajax_place_order' ]);
 
+        add_action('wp_ajax_tm_load_payment_fields', [__CLASS__, 'ajax_load_payment_fields']);
+        add_action('wp_ajax_nopriv_tm_load_payment_fields', [__CLASS__, 'ajax_load_payment_fields']);
+
+
     }
+
+
+    public static function ajax_load_payment_fields() {
+
+        check_ajax_referer('tm_nonce', 'nonce');
+
+        $gateway_id = sanitize_text_field($_POST['gateway'] ?? '');
+
+        if (!$gateway_id) {
+            wp_send_json_error(['message' => 'No gateway provided']);
+        }
+
+        $gateways = WC()->payment_gateways()->payment_gateways();
+        $gateway  = $gateways[$gateway_id] ?? null;
+
+        if (!$gateway) {
+            wp_send_json_error(['message' => 'Invalid payment method']);
+        }
+
+        ob_start();
+        $gateway->payment_fields();
+        $html = ob_get_clean();
+
+        wp_send_json_success(['html' => $html]);
+    }
+
 
     public static function ajax_place_order() {
 
