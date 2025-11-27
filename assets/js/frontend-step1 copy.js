@@ -173,9 +173,10 @@
   ------------------------------*/
   $("#tm-step1-next").on("click", function () {
     const type = getCurrentType();
-    const text = $("#tm-text").val().trim();
-    const tm_from = $("#tm_from").val().trim();
-    const goods = $("#tm-goods").val().trim();
+    const text = $("#tm-text").length ? $("#tm-text").val().trim() : "";
+    const tm_from = $("#tm_from").length ? $("#tm_from").val().trim() : "";
+    const goods = $("#tm-goods").length ? $("#tm-goods").val().trim() : "";
+
     const classes = getCurrentClasses();
 
     const st = getFormState();

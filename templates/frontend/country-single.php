@@ -53,13 +53,13 @@ foreach ($by_step as $s) {
 // Step 1 → Comprehensive Study
 $step1_url = add_query_arg(
     ['country' => $country->iso_code],
-    site_url('/tm/trademark-comprehensive-study/order-form')
+    site_url('/tm/trademark-choose/order-form')
 );
 
 // Step 2 → Registration / Filing
 $step2_url = add_query_arg(
     ['country' => $country->iso_code],
-    site_url('/tm/trademark-registration/order-form')
+    site_url('/tm/trademark-choose/order-form?tm_additional_class=1')
 );
 
 // Step 3 → Dashboard - Active Trademarks

@@ -87,6 +87,21 @@ $country_iso  = esc_attr($country->iso_code);
           <input type="text" id="tm-text" placeholder="Enter your trademark">
         </div>
 
+        <?php if ( ! isset($_GET['tm_additional_class']) || intval($_GET['tm_additional_class']) !== 1 ) : ?>
+          <div class="tm-field tm-goods-field">
+              <label class="tm-field-label">Goods and Services</label>
+              <small>
+                  Please describe the goods or services that your trademark will be used in connection with.
+              </small>
+              <textarea id="tm-goods" rows="4" placeholder="Describe goods/services"></textarea>
+
+              <p class="tm-note">
+                  <strong>Note:</strong> This helps us determine the appropriate trademark class for your registration.
+              </p>
+          </div>
+        <?php endif; ?>
+
+
 
         <!-- Trademark tm_from -->
         <input value="Comprehensive Trademark Study Testing Baba"  type="hidden" id="tm_from" >
@@ -115,8 +130,118 @@ $country_iso  = esc_attr($country->iso_code);
           </div>
         </div>
 
+
+    <?php if ( isset( $_GET['tm_additional_class'] ) && intval( $_GET['tm_additional_class'] ) === 1 ) :
+      
+      // Get price row for step2 to check priority/POA fees
+    $price_row = TM_Country_Prices::get_price_row( $country->id, 'word', 2 ); 
+    $priority_fee = $price_row ? floatval($price_row->priority_claim_fee) : 0;
+    $poa_fee      = $price_row ? floatval($price_row->poa_late_fee)      : 0;
+      
+      
+      ?>
+
+        <!-- ============================
+            TRADEMARK CLASSES
+        ============================== -->
+        <div class="tm-field tm-classes-section">
+          <label class="tm-field-label">Trademark Classes</label>
+          <small class="tm-field-help">
+            Please select the appropriate trademark classes for the goods or services that your trademark
+            will be used in connection with.
+          </small>
+
+          <div id="tm-class-list" class="tm-class-list">
+            <div class="tm-class-row">
+                <div class="tm-class-col tm-class-select-col">
+                  <label class="tm-small-label">Select Class</label>
+                  <select class="tm-class-select">
+                    <?php for ( $i = 1; $i <= 45; $i++ ) : ?>
+                      <option value="<?php echo $i; ?>">Class <?php echo $i; ?></option>
+                    <?php endfor; ?>
+                  </select>
+                </div>
+
+                <div class="tm-class-col tm-class-desc-col">
+                  <label class="tm-small-label">
+                    List the goods or services of this class that will be used in connection with your trademark.
+                  </label>
+                  <textarea class="tm-class-desc" rows="2"></textarea>
+                </div>
+
+                <button type="button" class="tm-class-remove" aria-label="Remove class">
+                  <span>&minus;</span>
+                </button>
+            </div>
+          </div>
+
+          <button type="button" id="tm-add-class" class="tm-btn-add-class">
+            <span class="tm-plus">+</span> Add Class
+          </button>
+        </div>
+
+        <!-- ============================
+            PRIORITY CLAIM
+        ============================== -->
+        <?php if ( $priority_fee > 0 ) : ?>
+        <div class="tm-field tm-priority-section">
+          <label class="tm-field-label">Priority Claim <span class="tm-info">?</span></label>
+          <div class="tm-choice-grid">
+              <label class="tm-choice-card is-active">
+                  <input type="radio" name="tm_priority" value="0" checked>
+                  <div class="tm-choice-inner">
+                      <div class="tm-choice-title">No Priority Claim</div>
+                      <p>You have not filed the same trademark in any other countries in the last 6 months.</p>
+                  </div>
+              </label>
+
+              <label class="tm-choice-card">
+                  <input type="radio" name="tm_priority" value="1">
+                  <div class="tm-choice-inner">
+                      <div class="tm-choice-title">With Priority Claim</div>
+                      <p>You have filed the same trademark in the last 6 months.</p>
+                  </div>
+              </label>
+          </div>
+        </div>
+        <?php endif; ?>
+
+
+          <!-- ============================
+              POWER OF ATTORNEY (POA)
+          ============================== -->
+          <?php if ( $poa_fee > 0 ) : ?>
+          <div class="tm-field tm-poa-section">
+            <label class="tm-field-label">Power of Attorney (POA) <span class="tm-info">?</span></label>
+            <div class="tm-choice-grid">
+
+                <label class="tm-choice-card is-active">
+                    <input type="radio" name="tm_poa" value="normal" checked>
+                    <div class="tm-choice-inner">
+                        <div class="tm-choice-title">Normal Filing</div>
+                        <p>Application will wait until POA is received.</p>
+                    </div>
+                </label>
+
+                <label class="tm-choice-card">
+                    <input type="radio" name="tm_poa" value="late">
+                    <div class="tm-choice-inner">
+                        <div class="tm-choice-title">Late Filing of POA</div>
+                        <p>Application will be filed immediately. Extra fee applies.</p>
+                    </div>
+                </label>
+
+            </div>
+          </div>
+          <?php endif; ?>
+
+
+<?php endif; ?>
+
+
+
         <!-- Goods -->
-        <div class="tm-field">
+        <!-- <div class="tm-field">
           <label class="tm-field-label">Goods and Services</label>
           <small>
             Please describe the goods or services that your trademark will be used in connection with.
@@ -126,7 +251,7 @@ $country_iso  = esc_attr($country->iso_code);
             <strong>Note:</strong> If you are familiar with trademark classes and have already identified the appropriate class
             for your application, you may specify it using this Trademark Class Selector.
           </p>
-        </div>
+        </div> -->
 
       </div>
     </div>
@@ -156,6 +281,7 @@ $country_iso  = esc_attr($country->iso_code);
   <!-- hidden meta -->
   <input type="hidden" id="tm-country-id" value="<?php echo (int) $country->id; ?>">
   <input type="hidden" id="tm-country-iso" value="<?php echo $country_iso; ?>">
-  <input type="hidden" id="tm-step-number" value="1">
+  <!-- <input type="hidden" id="tm-step-number" value="1"> -->
+<input type="hidden" id="tm-step-number" value="<?php echo isset($_GET['tm_additional_class']) && intval($_GET['tm_additional_class']) === 1 ? 2 : 1; ?>">
 
 </div>

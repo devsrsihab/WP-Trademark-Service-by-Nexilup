@@ -25,7 +25,7 @@ class TM_Rewrite {
         add_rewrite_tag('%tm_order_received%', '([0-1])');
 
         add_rewrite_rule(
-            '^tm/trademark-comprehensive-study/order-form/?$',
+            '^tm/trademark-choose/order-form/?$',
             'index.php?tm_study_order=1',
             'top'
         );

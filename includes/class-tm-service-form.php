@@ -6,7 +6,7 @@ class TM_Service_Form {
     /**
      * Detect which step should load based on rewrite query vars.
      * Flow:
-     *  - /tm/trademark-comprehensive-study/order-form/  => Step 1
+     *  - /tm/trademark-choose/order-form/  => Step 1
      *  - /tm/trademark-registration/order-form/        => Step 2 (Confirm Order)
      *  - Step 3 = WooCommerce Thank You page
      */

@@ -4,7 +4,7 @@ if (!defined('ABSPATH')) exit;
 class TM_Pages {
 
     public static $pages = [
-        'tm/trademark-comprehensive-study/order-form' => 'Trademark Comprehensive Study – Order Form',
+        'tm/trademark-choose/order-form' => 'Trademark choose – Order Form',
         'tm/trademark-registration/order-form'        => 'Trademark Registration – Order Form',
         'myaccount/my-trademarks/active-trademarks'   => 'Active Trademarks',
         'tm/trademark-confirmation/order-review'      => 'Trademark Order Review',

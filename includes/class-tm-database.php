@@ -64,6 +64,12 @@ class TM_Database {
             step_number TINYINT(3) UNSIGNED NOT NULL,
             price_one_class DECIMAL(10,2) NOT NULL DEFAULT 0.00,
             price_add_class DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+
+            /* NEW EXTRA PRICING COLUMNS */
+            priority_claim_fee DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+            poa_late_fee DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+
+
             currency CHAR(3) NOT NULL DEFAULT 'USD',
             created_at DATETIME NOT NULL,
             updated_at DATETIME NOT NULL,

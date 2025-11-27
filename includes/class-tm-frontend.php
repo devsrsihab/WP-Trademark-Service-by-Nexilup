@@ -239,6 +239,8 @@ class TM_Frontend {
             'country_id'  => (int)$country->id,
             'country_iso' => $country->iso_code,
             'step'        => $step,
+            'tm_additional_class'=> isset($_GET['tm_additional_class']) ? (int) $_GET['tm_additional_class'] : 0,
+
         ];
 
         ob_start();

@@ -34,6 +34,23 @@ class TM_WooCommerce {
 
     public static function ajax_place_order() {
 
+        // -------------------------------------------------------------
+        // GET COUNTRY ISO FROM CART (handles both tm_data and flat keys)
+        // -------------------------------------------------------------
+        $country_iso = '';
+
+        foreach (WC()->cart->get_cart() as $ci) {
+            if (!empty($ci['tm_data']['country_iso'])) {
+                $country_iso = $ci['tm_data']['country_iso'];
+                break;
+            }
+            if (!empty($ci['country_iso'])) {
+                $country_iso = $ci['country_iso'];
+                break;
+            }
+        }
+
+
 
 
         check_ajax_referer('tm_nonce', 'nonce');
@@ -54,12 +71,13 @@ class TM_WooCommerce {
         $order_id = WC()->checkout()->create_order([
             'payment_method' => $gateway_id
         ]);
-
+      
         if (is_wp_error($order_id)) {
             wp_send_json_error(['message' => 'Order creation failed.']);
         }
 
         $order = wc_get_order($order_id);
+
 
         // Set customer info automatically (optional)
         $order->set_billing_email(wp_get_current_user()->user_email);
@@ -83,7 +101,7 @@ class TM_WooCommerce {
 
         if ($result && isset($result['result']) && $result['result'] === 'success') {
         wp_send_json_success([
-            'redirect' => home_url("/tm/trademark-confirmation/order-review/?tm_order_received={$order_id}&key={$order->get_order_key()}")
+            'redirect' => home_url("/tm/trademark-confirmation/order-review/?tm_order_received={$order_id}&country={$country_iso}&key={$order->get_order_key()}")
         ]);
 
         }
@@ -149,6 +167,9 @@ class TM_WooCommerce {
             }
         }
 
+
+
+
         $tm_data = [
             // 'country'     => sanitize_text_field($data['country_iso'] ?? ''),
             'tm_country'  => intval($data['country']),
@@ -156,6 +177,14 @@ class TM_WooCommerce {
 
             'type'        => sanitize_text_field($data['trademark_type'] ?? 'word'),
             'classes'     => intval($data['classes'] ?? 1),
+
+            // Step 2 Advanced Data
+            'tm_additional_class' => intval($data['tm_additional_class'] ?? 0),
+            'class_list'          => isset($data['class_list']) ? json_decode($data['class_list'], true) : [],
+            'class_details'       => isset($data['class_details']) ? json_decode($data['class_details'], true) : [],
+            'tm_priority'         => sanitize_text_field($data['tm_priority'] ?? '0'),
+            'tm_poa'              => sanitize_text_field($data['tm_poa'] ?? 'normal'),
+
             'total_price' => floatval($data['total_price'] ?? 0),
             'currency'    => sanitize_text_field($data['currency'] ?? 'USD'),
             'goods'       => sanitize_text_field($data['goods'] ?? ''),
@@ -182,7 +211,7 @@ class TM_WooCommerce {
             'tm_classes'  => $tm_data['classes'],
             'tm_total'    => $tm_data['total_price'],
             'tm_currency' => $tm_data['currency'],
-            'tm_step'     => 1,
+            'tm_step'     => $data['tm_additional_class1'],
         ];
 
         $cart_key = WC()->cart->add_to_cart($product_id, 1, 0, [], $cart_item_data);
@@ -252,75 +281,137 @@ class TM_WooCommerce {
     /**
      * Helper: compute correct dynamic price from DB
      */
-    private static function compute_item_total($country_id, $type, $step, $classes, $fallback_total = 0) {
-
+    public  static function compute_item_total($country_id, $type, $step, $classes, $item = []) {
 
         if (!class_exists('TM_Country_Prices')) {
-            return floatval($fallback_total);
+            return floatval($item['tm_total'] ?? 0);
         }
 
         $row = TM_Country_Prices::get_price_row($country_id, $type, $step);
-
         if (!$row) {
-            return floatval($fallback_total);
+            return floatval($item['tm_total'] ?? 0);
         }
 
-        $one   = floatval($row->price_one_class);
-        $add   = floatval($row->price_add_class);
-        $extra = max(0, $classes - 1);
+        $one  = floatval($row->price_one_class);
+        $add  = floatval($row->price_add_class);
 
+        $priority_fee = floatval($row->priority_claim_fee ?? 0);
+        $poa_fee      = floatval($row->poa_late_fee ?? 0);
 
+        $extra = max(0, intval($classes) - 1);
+        $total = $one + ($extra * $add);
 
+        // ------------------------------
+        // ENHANCED STEP-2 FEES
+        // ------------------------------
+        $is_extra = intval($item['tm_additional_class'] ?? $item['tm_data']['tm_additional_class'] ?? 0);
 
-        return $one + ($extra * $add);
-    }
+        if ($is_extra == 1) {
 
-    /**
-     * Apply dynamic price so WC cart total matches your DB price
-     */
-    public static function override_dynamic_price($cart) {
-
-        if (is_admin() && !wp_doing_ajax()) return;
-        if (!$cart) return;
-
-        foreach ($cart->get_cart() as $key => $item) {
-
-            // detect item data
-            if (!empty($item['tm_data'])) {
-
-                $tm       = $item['tm_data'];
-                $country_id  = intval($tm['country_id'] ?? 0);
-                $country_iso = sanitize_text_field($tm['country_iso']);
-                $type     = sanitize_text_field($tm['type'] ?? 'word');
-                $step     = intval($tm['step'] ?? 1);
-                $classes  = max(1, intval($tm['classes'] ?? 1));
-                $fallback = floatval($tm['total_price'] ?? 0);
-
-            } else {
-                // flattened fallback
-                // $country  = intval($item['tm_country'] ?? 0);
-                $country_id  = intval($item['country_id']);
-                $country_iso  = sanitize_text_field($item['country_iso']);
-                $type     = sanitize_text_field($item['tm_type'] ?? 'word');
-                $step     = intval($item['tm_step'] ?? 1);
-                $classes  = max(1, intval($item['tm_classes'] ?? 1));
-                $fallback = floatval($item['tm_total'] ?? 0);
+            // Priority claim
+            $priority_selected = $item['tm_priority'] ?? $item['tm_data']['tm_priority'] ?? "0";
+            if ($priority_selected == "1") {
+                $total += $priority_fee;
             }
 
-            // calculate correct price
-            $total = self::compute_item_total($country_id, $type, $step, $classes, $fallback);
-
-            // set price for WooCommerce
-            $item['data']->set_price($total);
-
-            // update cart array
-            if (!empty($item['tm_data'])) {
-                $cart->cart_contents[$key]['tm_data']['total_price'] = $total;
+            // POA Late filing
+            $poa_selected = $item['tm_poa'] ?? $item['tm_data']['tm_poa'] ?? "normal";
+            if ($poa_selected === "late") {
+                $total += $poa_fee;
             }
-
-            $cart->cart_contents[$key]['tm_total'] = $total;
         }
+
+        return max(1, $total);
     }
+
+
+        /**
+         * Apply dynamic price so WC cart total matches your DB price
+         */
+public static function override_dynamic_price($cart)
+{
+    if (is_admin() && !wp_doing_ajax()) return;
+    if (!$cart) return;
+
+    foreach ($cart->get_cart() as $key => $item) {
+
+        //-----------------------------------------
+        // 1) EXTRACT META (nested or flattened)
+        //-----------------------------------------
+        $tm = $item['tm_data'] ?? $item;
+
+        $country_id = intval(
+            $tm['country_id']
+            ?? $tm['tm_country']
+            ?? 0
+        );
+
+        $type = sanitize_text_field(
+            $tm['type']
+            ?? $tm['tm_type']
+            ?? 'word'
+        );
+
+        $step = intval(
+            $tm['step']
+            ?? $tm['tm_step']
+            ?? 1
+        );
+
+        $classes = intval(
+            $tm['classes']
+            ?? $tm['tm_class_count']
+            ?? $tm['tm_classes']
+            ?? 1
+        );
+
+        //-----------------------------------------
+        // 2) SECURE BACKEND TOTAL
+        // prefer "tm_total_price" stored earlier
+        //-----------------------------------------
+        $stored_total = floatval(
+            $tm['tm_total_price']
+            ?? $tm['total_price']
+            ?? $tm['tm_total']
+            ?? 0
+        );
+
+        //-----------------------------------------
+        // 3) CHOOSE FINAL PRICE
+        //-----------------------------------------
+        if ($stored_total > 0) {
+            $total = $stored_total; // safest
+        } else {
+            // legacy fallback = compute from DB
+            $total = self::compute_item_total(
+                $country_id,
+                $type,
+                $step,
+                $classes,
+                $stored_total
+            );
+        }
+
+        //-----------------------------------------
+        // 4) APPLY PRICE
+        //-----------------------------------------
+        $item['data']->set_price($total);
+
+        //-----------------------------------------
+        // 5) SYNC BACK INTO CART ARRAY
+        //-----------------------------------------
+        if (!empty($item['tm_data'])) {
+            // nested format
+            $cart->cart_contents[$key]['tm_data']['tm_total_price'] = $total;
+        }
+
+        // flattened format
+        $cart->cart_contents[$key]['tm_total_price'] = $total;
+        $cart->cart_contents[$key]['tm_total']       = $total;
+    }
+}
+
+
 
 
 

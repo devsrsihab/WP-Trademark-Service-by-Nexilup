@@ -51,6 +51,8 @@ class TM_Country_Prices {
         $table = $wpdb->prefix."tm_country_prices";
 
         $country  = intval($_POST["country"]);
+        $priority_claim_fee  = floatval($_POST["priority_claim_fee"]);
+        $poa_late_fee  = floatval($_POST["poa_late_fee"]);
         $type     = sanitize_text_field($_POST["type"]);
         $currency = sanitize_text_field($_POST["currency"]);
         $mode     = intval($_POST["mode"]);
@@ -72,6 +74,12 @@ class TM_Country_Prices {
                 "step_number"       => $step,
                 "price_one_class"   => floatval($v["one"]),
                 "price_add_class"   => floatval($v["add"]),
+
+                // NEW COLUMNS — properly sanitized
+                "priority_claim_fee"  => floatval($priority_claim_fee),
+                "poa_late_fee"        => floatval($poa_late_fee),
+                
+
                 "currency"          => $currency,
                 "created_at"        => current_time("mysql"),
                 "updated_at"        => current_time("mysql")
@@ -105,7 +113,10 @@ class TM_Country_Prices {
             "s2_one"   => $rows[1]->price_one_class,
             "s2_add"   => $rows[1]->price_add_class,
             "s3_one"   => $rows[2]->price_one_class,
-            "s3_add"   => $rows[2]->price_add_class
+            "s3_add"   => $rows[2]->price_add_class,
+             // NEW FIELDS
+            "priority_claim_fee" => $rows[0]->priority_claim_fee,
+            "poa_late_fee"       => $rows[0]->poa_late_fee,
         ];
 
         wp_send_json_success($resp);
@@ -163,9 +174,13 @@ class TM_Country_Prices {
         $one = floatval($row->price_one_class);
         $add = floatval($row->price_add_class);
         $currency = $row->currency ?: 'USD';
+        $priority_fee = floatval($row->priority_claim_fee ?? 0);
+        $poa_fee      = floatval($row->poa_late_fee ?? 0);
 
         $extra = max(0, $classes - 1);
         $total = $one + ($extra * $add);
+
+
 
         wp_send_json_success([
             'one'      => $one,
@@ -173,7 +188,10 @@ class TM_Country_Prices {
             'classes'  => $classes,
             'extra'    => $extra,
             'total'    => $total,
-            'currency' => $currency
+            'currency' => $currency,
+            // NEW FIELDS
+            'priority_claim_fee' => $priority_fee,
+            'poa_late_fee' => $poa_fee,
         ]);
     }
 
@@ -194,13 +212,24 @@ class TM_Country_Prices {
         global $wpdb;
         $table = self::table();
 
-        return $wpdb->get_row(
+        $row = $wpdb->get_row(
             $wpdb->prepare(
-                "SELECT * FROM $table 
-                 WHERE country_id = %d AND trademark_type = %s AND step_number = %d
-                 LIMIT 1",
+                "SELECT * FROM $table WHERE country_id=%d AND trademark_type=%s AND step_number=%d",
                 $country_id, $type, $step
             )
         );
+
+        // fallback if figurative/combined prices not set
+        if (!$row && ($type === 'figurative' || $type === 'combined')) {
+            $row = $wpdb->get_row(
+                $wpdb->prepare(
+                    "SELECT * FROM $table WHERE country_id=%d AND trademark_type=%s AND step_number=%d",
+                    $country_id, 'word', $step
+                )
+            );
+        }
+
+        return $row;
+
     }
 }

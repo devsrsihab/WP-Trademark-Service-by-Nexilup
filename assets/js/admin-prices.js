@@ -20,6 +20,8 @@
     $("#tm-price-country").val("");
     $("#tm-price-type").val("word");
     $("#tm-price-currency").val("USD");
+    $("#priority_claim_fee").val(0);
+    $("#poa_late_fee").val(0);
 
     $("#s1_one, #s1_add, #s2_one, #s2_add, #s3_one, #s3_add").val("");
 
@@ -62,6 +64,9 @@
         s2_add,
         s3_one,
         s3_add,
+        // NEW FIELDS
+        priority_claim_fee: $("#priority_claim_fee").val(),
+        poa_late_fee: $("#poa_late_fee").val(),
       },
       function (res) {
         if (!res.success) {
@@ -137,6 +142,10 @@
         $("#s2_add").val(d.s2_add);
         $("#s3_one").val(d.s3_one);
         $("#s3_add").val(d.s3_add);
+
+        // NEW FIELDS
+        $("#priority_claim_fee").val(d.priority_claim_fee);
+        $("#poa_late_fee").val(d.poa_late_fee);
 
         openModal();
       }

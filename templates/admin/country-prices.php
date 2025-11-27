@@ -26,7 +26,6 @@ $nonce     = wp_create_nonce('tm_country_prices_nonce');
             <th>Step</th>
             <th>One Class Fee</th>
             <th>Additional Class Fee</th>
-            <th>Currency</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -42,7 +41,6 @@ $nonce     = wp_create_nonce('tm_country_prices_nonce');
                 <td><?php echo $p->step_number; ?></td>
                 <td><?php echo number_format($p->price_one_class, 2); ?></td>
                 <td><?php echo number_format($p->price_add_class, 2); ?></td>
-                <td><?php echo esc_html($p->currency); ?></td>
 
                 <td>
                     <?php if ($p->step_number == 1): ?>
@@ -122,6 +120,17 @@ $nonce     = wp_create_nonce('tm_country_prices_nonce');
                     <label>Additional Class Fee</label>
                     <input type="number" id="s1_add" class="tm-small" placeholder="0.00" step="0.01" min="0">
                 </div>
+
+                <div class="tm-field">
+                    <label>Priority Claim Fee</label>
+                    <input type="number" id="priority_claim_fee" class="tm-small" placeholder="0.00" step="0.01" min="0">
+                </div>
+
+                <div class="tm-field">
+                    <label>POA Late Fee</label>
+                    <input type="number" id="poa_late_fee" class="tm-small" placeholder="0.00" step="0.01" min="0">
+                </div>
+                
             </div>
         </div>
 

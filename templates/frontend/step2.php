@@ -84,86 +84,188 @@ update_option('tm_last_country_id', $country_id);
             $mid_text = $type_label . " in " . $classes . " class" . ($classes > 1 ? "es" : "");
 
             // ------- DYNAMIC PRICE FETCH ----------
-            $price_row = TM_Country_Prices::get_price_row($country_id, $type, $step_num);
+            // ------- USE WC CART LINE PRICE (already includes extra classes, priority, POA, etc.) ----------
+            $price = floatval( $item['data']->get_price() );
 
-            if ($price_row) {
-                $one   = floatval($price_row->price_one_class);
-                $add   = floatval($price_row->price_add_class);
-                $extra = max(0, $classes - 1);
-                $price = $one + ($extra * $add);
-            } else {
+            // Fallback to stored total if for some reason price is 0
+            if (!$price && $fallback) {
                 $price = $fallback;
             }
 
             $grand_total += $price;
 
+
             $editable_title = !empty($tm_from) ? $tm_from : $tm_title;
           ?>
 
-            <div class="tm-cart-card" data-cart-key="<?php echo esc_attr($cart_item_key); ?>">
+<div class="tm-cart-card" data-cart-key="<?php echo esc_attr($cart_item_key); ?>">
 
-                <!-- remove icon -->
-                <span class="tm-remove-item <?php echo $tm_title ? 'tm-item-hide' : '' ?> "
-                      title="Remove item"
-                      data-cart-key="<?php echo esc_attr($cart_item_key); ?>">
-                  ×
-                </span>
+    <?php
+      // Is this the "additional class" mode?
+      $is_extra = intval($item['tm_additional_class'] ?? 0) === 1;
 
-                <!-- edit icon -->
-                <span class="tm-edit-item <?php echo $tm_title ? '' : 'tm-item-hide' ?>"
-                      title="Edit title"
-                      data-cart-key="<?php echo esc_attr($cart_item_key); ?>">
-                </span>
+      // FIXED: use WC price OR tm_total_price fallback
+      $line_price_from_cart = floatval(
+          $item['data']->get_price()
+          ?: ($item['tm_total_price'] ?? 0)
+      );
 
-                <!-- view mode -->
-                <div class="tm-cart-view">
-                    <?php
-                    $is_image_type = in_array($type, ['figurative', 'combined']);
-                    $has_image     = !empty($logo);
- 
-                    ?>
 
-                    <div class="tm-view-header <?php echo $is_image_type ? 'with-img' : 'no-img'; ?>">
+        $logo = $item['tm_logo_url'] ?? ''; // <---- IMPORTANT
 
-                        <?php if ($is_image_type && $has_image): ?>
-                            <div class="tm-img-box">
-                                <img src="<?php echo esc_url($logo); ?>" alt="Trademark Image">
-                            </div>
-                        <?php endif; ?>
+        $is_image_type = in_array($type, ['figurative', 'combined'], true);
+        $has_image     = !empty($logo);
 
-                        <div class="tm-header-text">
-                            <div class="tm-header-title">
-                                <?php echo esc_html($type_label); ?>
-                            </div>
+      // ---------------------------
+      // EXTRA CLASS MODE
+      // ---------------------------
+      if ( $is_extra ) {
 
-                            <?php if ($tm_title): ?>
-                                <div class="tm-header-subtitle">
-                                    <?php echo esc_html($tm_title); ?>
-                                </div>
-                            <?php endif; ?>
-                        </div>
+        // Class count & list from cart meta
+        $class_count = intval( $item['tm_class_count'] ?? 1 );
+
+        $class_list_json = stripslashes($item['tm_class_list']) ?? '[]';
+        $class_list_arr  = json_decode( $class_list_json, true );
+        if ( ! is_array( $class_list_arr ) ) {
+            $class_list_arr = [];
+        }
+
+        // "10-19-17" style string
+        $class_list_string = !empty($class_list_arr)
+            ? implode( '-', $class_list_arr )
+            : (string) $class_count;
+
+        // Priority / POA selection from cart
+        $tm_priority = $item['tm_priority'] ?? '0';
+        $tm_poa      = $item['tm_poa'] ?? 'normal';
+
+        // Country / type for DB lookup
+        $country_id_for_price = intval( $item['country_id'] ?? 0 );
+        $type_for_price       = sanitize_text_field( $item['tm_type'] ?? 'word' );
+
+        // Get step=2 price row
+        $row = TM_Country_Prices::get_price_row( $country_id_for_price, $type_for_price, 2 );
+
+        $filing_price       = 0.0;
+        $priority_fee_value = 0.0;
+        $poa_fee_value      = 0.0;
+
+        if ( $row ) {
+            $one   = floatval( $row->price_one_class );
+            $add   = floatval( $row->price_add_class );
+            $extra = max( 0, $class_count - 1 );
+
+            // Filing
+            $filing_price = $one + ($extra * $add);
+
+            // Priority / POA
+            $priority_fee_value = floatval( $row->priority_claim_fee ?? 0 );
+            $poa_fee_value      = floatval( $row->poa_late_fee ?? 0 );
+        }
+
+        // User selection
+        $priority_price = ($tm_priority == '1') ? $priority_fee_value : 0.0;
+        $poa_price      = ($tm_poa === 'late') ? $poa_fee_value : 0.0;
+
+        // Final total
+        $line_total = $filing_price + $priority_price + $poa_price;
+
+        // Use WC fallback
+        if ( !$line_total && $line_price_from_cart ) {
+            $line_total = $line_price_from_cart;
+        }
+
+    }
+    ?>
+
+    <!-- remove icon -->
+    <span class="tm-remove-item <?php echo $tm_title ? 'tm-item-hide' : '' ?>"
+          title="Remove item"
+          data-cart-key="<?php echo esc_attr($cart_item_key); ?>">×</span>
+
+    <!-- edit icon -->
+    <span class="tm-edit-item <?php echo $tm_title ? '' : 'tm-item-hide' ?>"
+          title="Edit title"
+          data-cart-key="<?php echo esc_attr($cart_item_key); ?>"></span>
+
+    <?php if ( $is_extra ) : ?>
+
+        <!-- HEADER: title + class list -->
+        <div class="tm-confirm-header-row">
+            <div class="tm-card-title"><?php echo esc_html( $editable_title ); ?></div>
+            <div class="tm-card-classes"><strong>Class(es):</strong> <?php echo esc_html( $class_list_string ); ?></div>
+        </div>
+
+        <hr class="tm-divider">
+
+        <div class="tm-cart-view">
+
+            <!-- Filing -->
+            <div class="tm-cart-row">
+                <div class="tm-col tm-col-left">Trademark Application Filing - <?php echo esc_html($country_name); ?></div>
+                <div class="tm-col tm-col-mid"><?php echo esc_html($type_label . ' in ' . $class_count . ' classes'); ?></div>
+                <div class="tm-col tm-col-right"><?php echo wc_price($filing_price); ?></div>
+            </div>
+
+            <!-- Priority -->
+            <div class="tm-cart-row">
+                <div class="tm-col tm-col-left">Priority Claim - <?php echo esc_html($country_name); ?></div>
+                <div class="tm-col tm-col-mid"><?php echo esc_html($type_label . ' in ' . $class_count . ' classes'); ?></div>
+                <div class="tm-col tm-col-right"><?php echo wc_price($priority_price); ?></div>
+            </div>
+
+            <!-- POA -->
+            <div class="tm-cart-row">
+                <div class="tm-col tm-col-left">Late Filing of POA - <?php echo esc_html($country_name); ?></div>
+                <div class="tm-col tm-col-mid"><?php echo esc_html($type_label . ' in ' . $class_count . ' classes'); ?></div>
+                <div class="tm-col tm-col-right"><?php echo wc_price($poa_price); ?></div>
+            </div>
+
+            <!-- TOTAL -->
+            <div class="tm-cart-total">
+                <?php echo wc_price($line_total); ?>
+            </div>
+
+        </div>
+
+    <?php else : ?>
+
+        <!-- STANDARD ONE-CLASS TM (FIXED PRICE DISPLAY) -->
+
+        <div class="tm-cart-view">
+
+            <div class="tm-view-header <?php echo $has_image ? 'with-img' : 'no-img'; ?>">
+
+                <?php if ($has_image): ?>
+                    <div class="tm-img-box">
+                        <img src="<?php echo esc_url($logo); ?>" alt="Trademark Image">
                     </div>
+                <?php endif; ?>
 
-                  <div class="tm-cart-row">
-                    <div class="tm-col tm-col-left tm-title">
-                      <?php echo esc_html($editable_title); ?>
-                    </div>
+                <div class="tm-header-text">
+                    <div class="tm-header-title"><?php echo esc_html($type_label); ?></div>
 
-                    <div class="tm-col tm-col-mid">
-                      <?php echo esc_html($mid_text); ?>
-                    </div>
-
-                    <div class="tm-col tm-col-right">
-                      <?php echo wc_price($price); ?>
-                    </div>
-                  </div>
-
-                  <div class="tm-cart-total">
-                    <?php echo wc_price($price); ?>
-                  </div>
+                    <?php if ($tm_title): ?>
+                        <div class="tm-header-subtitle"><?php echo esc_html($tm_title); ?></div>
+                    <?php endif; ?>
                 </div>
+            </div>
 
-                <!-- edit mode -->
+            <div class="tm-cart-row">
+                <div class="tm-col tm-col-left tm-title"><?php echo esc_html($editable_title); ?></div>
+                <div class="tm-col tm-col-mid"><?php echo esc_html($mid_text); ?></div>
+
+                <!-- FIXED PRICE DISPLAY -->
+                <div class="tm-col tm-col-right"><?php echo wc_price($line_price_from_cart); ?></div>
+            </div>
+
+            <div class="tm-cart-total">
+                <?php echo wc_price($line_price_from_cart); ?>
+            </div>
+
+        </div>
+
+             <!-- edit mode -->
                 <div class="tm-cart-editbox" style="display:none;">
                   <input type="text"
                         class="tm-edit-input"
@@ -183,7 +285,17 @@ update_option('tm_last_country_id', $country_id);
                   </div>
                 </div>
 
-            </div>
+
+    <?php endif; ?>
+
+</div>
+
+
+
+
+
+
+            
           <?php endforeach; ?>
 
         <?php else: ?>
@@ -210,8 +322,9 @@ update_option('tm_last_country_id', $country_id);
           </div>
 
           <div class="tm-summary-total">
-            Total: <?php echo wc_price($grand_total ?? 00)  ; ?>
+            Total: <?php echo WC()->cart->get_total(); ?>
           </div>
+
 
           <h4 class="tm-pay-title">Payment Options</h4>
 
@@ -235,7 +348,7 @@ update_option('tm_last_country_id', $country_id);
           </button>
 
           <a class="tm-back-link"
-            href="<?php echo esc_url( site_url('/tm/trademark-comprehensive-study/order-form?country=' . $country_iso) ); ?>">
+            href="<?php echo esc_url( site_url('/tm/trademark-choose/order-form?country=' . $country_iso) ); ?>">
             ← Back to edit Trademark Information
           </a>
 

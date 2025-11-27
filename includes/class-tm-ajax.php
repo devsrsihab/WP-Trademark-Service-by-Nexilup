@@ -22,7 +22,12 @@ class TM_Ajax {
         check_ajax_referer('tm_nonce', 'nonce');
 
         $country_id = intval($_POST['country'] ?? 0);
-        $type       = sanitize_text_field($_POST['type'] ?? 'word');
+        $type = sanitize_text_field($_POST['type'] ?? 'word');
+
+        if ($type !== 'word') {
+            $type = 'word'; // fallback – only Word Mark has pricing
+        }
+
         $classes    = max(1, intval($_POST['classes'] ?? 1));
         $step       = max(1, intval($_POST['step'] ?? 1)); // ✅ allow step1 & step2
 
@@ -42,10 +47,16 @@ class TM_Ajax {
 
         $one = floatval($row->price_one_class);
         $add = floatval($row->price_add_class);
+
+        $priority_fee = floatval($row->priority_claim_fee ?? 0);
+        $poa_fee      = floatval($row->poa_late_fee ?? 0);
+
         $currency = $row->currency ?: 'USD';
 
         $extra_classes = max(0, $classes - 1);
         $total = $one + ($extra_classes * $add);
+
+
 
         wp_send_json_success([
             'one'         => $one,
@@ -56,6 +67,9 @@ class TM_Ajax {
             'currency'    => $currency,
             'step'        => $step,
             'type'        => $type,
+            // NEW FIELDS
+            'priority_claim_fee' => $priority_fee,
+            'poa_late_fee' => $poa_fee,
         ]);
     }
 }

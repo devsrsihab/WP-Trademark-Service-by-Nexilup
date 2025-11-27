@@ -1,3 +1,11 @@
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none !important;
+  border: 1px solid #cfd8ea !important; /* or your preferred color */
+  box-shadow: none !important;
+}
+
 /* -------------------------------------------------
    STEP 1 PAGE ONLY
 --------------------------------------------------*/
@@ -236,6 +244,9 @@
 .tm-summary-card {
   border: 1px solid #d9d9d9;
   background: #fff;
+  position: sticky;
+  top: 11vh;
+  z-index: 100;
 }
 
 .tm-summary-head {
@@ -262,6 +273,385 @@
   font-weight: 700;
   border-radius: 6px;
   margin-top: 12px;
+}
+
+/* === Trademark Classes Section === */
+.tm-step1 .tm-classes-section {
+  margin-top: 25px;
+  border-top: 1px solid #e5e9f5;
+  padding-top: 15px;
+}
+
+.tm-step1 .tm-field-label {
+  display: block;
+  font-weight: 700;
+  font-size: 15px;
+  color: #003c96;
+  margin-bottom: 4px;
+}
+
+.tm-step1 .tm-field-help {
+  display: block;
+  font-size: 12px;
+  color: #6a7285;
+  margin-bottom: 10px;
+}
+
+.tm-step1 .tm-class-list {
+  border: 1px solid #d6deef;
+  border-radius: 2px;
+  padding: 12px 12px 6px;
+  background: #f9fbff;
+}
+
+.tm-step1 .tm-class-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 32px;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 8px 0;
+  border-bottom: 1px solid #e5ecfa;
+}
+
+.tm-step1 .tm-class-row:last-child {
+  border-bottom: none;
+}
+
+.tm-step1 .tm-class-col select,
+.tm-step1 .tm-class-col textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.tm-step1 .tm-class-select-col select {
+  height: 32px;
+  border: 1px solid #c4cee6;
+  border-radius: 2px;
+  font-size: 13px;
+}
+
+.tm-step1 .tm-class-desc-col textarea {
+  border: 1px solid #c4cee6;
+  border-radius: 2px;
+  font-size: 13px;
+  padding: 6px 8px;
+  resize: vertical;
+}
+
+.tm-step1 .tm-small-label {
+  display: block;
+  font-size: 11px;
+  color: #6a7285;
+  margin-bottom: 4px;
+}
+
+.tm-step1 .tm-class-remove {
+  margin-top: 18px;
+  width: 18px !important;
+  height: 18px !important;
+  border-radius: 50%;
+  border: none;
+  background: #ff6262;
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tm-step1 .tm-class-remove:hover {
+  background: #e44343;
+}
+
+.tm-step1 .tm-btn-add-class {
+  margin-top: 10px;
+  padding: 6px 14px;
+  font-size: 13px;
+  background: #f5fbff;
+  border: 1px solid #2f7df6;
+  color: #2f7df6;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.tm-step1 .tm-btn-add-class .tm-plus {
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.tm-step1 .tm-btn-add-class:hover {
+  background: #2f7df6;
+  color: #fff;
+}
+
+/* === Choice cards (Priority + POA) === */
+.tm-step1 .tm-choice-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.tm-step1 .tm-choice-card {
+  position: relative;
+  border: 1px solid #d2dbf1;
+  border-radius: 2px;
+  background: #f8faff;
+  cursor: pointer;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #30384c;
+  transition: all 0.15s ease;
+}
+
+.tm-step1 .tm-choice-card input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tm-step1 .tm-choice-inner {
+  padding-left: 18px;
+}
+
+.tm-step1 .tm-choice-title {
+  font-weight: 700;
+  color: #003c96;
+  margin-bottom: 4px;
+}
+
+.tm-step1 .tm-choice-card.is-active,
+.tm-step1 .tm-choice-card:hover {
+  background: #eaf3ff;
+  border-color: #2f7df6;
+}
+
+/* little radio dot effect on left */
+.tm-step1 .tm-choice-card::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 14px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid #a9b6d8;
+  background: #fff;
+}
+
+.tm-step1 .tm-choice-card.is-active::before {
+  border-color: #2f7df6;
+  background: #2f7df6;
+}
+
+/* === Responsive tweaks === */
+@media (max-width: 900px) {
+  .tm-step1 .tm-class-row {
+    grid-template-columns: 1fr;
+  }
+
+  .tm-step1 .tm-class-remove {
+    margin-top: 0;
+    justify-self: flex-start;
+  }
+
+  .tm-step1 .tm-choice-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* === Trademark Classes Section === */
+.tm-step1 .tm-classes-section {
+  margin-top: 25px;
+  border-top: 1px solid #e5e9f5;
+  padding-top: 15px;
+}
+
+.tm-step1 .tm-field-label {
+  display: block;
+  font-weight: 700;
+  font-size: 15px;
+  color: #003c96;
+  margin-bottom: 4px;
+}
+
+.tm-step1 .tm-field-help {
+  display: block;
+  font-size: 12px;
+  color: #6a7285;
+  margin-bottom: 10px;
+}
+
+.tm-step1 .tm-class-list {
+  border: 1px solid #d6deef;
+  border-radius: 2px;
+  padding: 12px 12px 6px;
+  background: #f9fbff;
+}
+
+.tm-step1 .tm-class-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 32px;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 8px 0;
+  border-bottom: 1px solid #e5ecfa;
+}
+
+.tm-step1 .tm-class-row:last-child {
+  border-bottom: none;
+}
+
+.tm-step1 .tm-class-col select,
+.tm-step1 .tm-class-col textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.tm-step1 .tm-class-select-col select {
+  height: 32px;
+  border: 1px solid #c4cee6;
+  border-radius: 2px;
+  font-size: 13px;
+}
+
+.tm-step1 .tm-class-desc-col textarea {
+  border: 1px solid #c4cee6;
+  border-radius: 2px;
+  font-size: 13px;
+  padding: 6px 8px;
+  resize: vertical;
+}
+
+.tm-step1 .tm-small-label {
+  display: block;
+  font-size: 11px;
+  color: #6a7285;
+  margin-bottom: 4px;
+}
+
+.tm-step1 .tm-class-remove {
+  margin-top: 22px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #d0d7e8;
+  border-radius: 0px;
+  background: #fff;
+  color: #ff4d4d;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tm-step1 .tm-class-remove:hover {
+  background: #e44343;
+  border-radius: 0px;
+}
+
+.tm-step1 .tm-btn-add-class {
+  margin-top: 10px;
+  padding: 6px 14px;
+  font-size: 13px;
+  background: #f5fbff;
+  border: 1px solid #2f7df6;
+  color: #2f7df6;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.tm-step1 .tm-btn-add-class .tm-plus {
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.tm-step1 .tm-btn-add-class:hover {
+  background: #2f7df6;
+  color: #fff;
+}
+
+/* === Choice cards (Priority + POA) === */
+.tm-step1 .tm-choice-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.tm-step1 .tm-choice-card {
+  position: relative;
+  border: 1px solid #d2dbf1;
+  border-radius: 2px;
+  background: #f8faff;
+  cursor: pointer;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #30384c;
+  transition: all 0.15s ease;
+}
+
+.tm-step1 .tm-choice-card input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tm-step1 .tm-choice-inner {
+  padding-left: 18px;
+}
+
+.tm-step1 .tm-choice-title {
+  font-weight: 700;
+  color: #003c96;
+  margin-bottom: 4px;
+}
+
+.tm-step1 .tm-choice-card.is-active,
+.tm-step1 .tm-choice-card:hover {
+  background: #eaf3ff;
+  border-color: #2f7df6;
+}
+
+/* little radio dot effect on left */
+.tm-step1 .tm-choice-card::before {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 14px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid #a9b6d8;
+  background: #fff;
+}
+
+.tm-step1 .tm-choice-card.is-active::before {
+  border-color: #2f7df6;
+  background: #2f7df6;
+}
+
+/* === Responsive tweaks === */
+@media (max-width: 900px) {
+  .tm-step1 .tm-class-row {
+    grid-template-columns: 1fr;
+  }
+
+  .tm-step1 .tm-class-remove {
+    margin-top: 0;
+    justify-self: flex-start;
+  }
+
+  .tm-step1 .tm-choice-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Responsive */
