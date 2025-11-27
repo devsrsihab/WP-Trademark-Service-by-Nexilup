@@ -106,16 +106,13 @@ $nonce = wp_create_nonce('tm_countries_nonce');
         <h2>Add Country</h2>
 
         <div class="tm-field">
-            <label>Country</label>
-            <select id="tm-country-select">
-                <option value="">Select Country</option>
-                <?php include WP_TMS_NEXILUP_PLUGIN_PATH . 'includes/country-list.php'; ?>
-            </select>
+            <label>Country Name</label>
+            <input type="text" id="tm-country-input" placeholder="Enter country name">
         </div>
 
         <div class="tm-field">
             <label>ISO Code</label>
-            <input type="text" id="tm-iso-input" readonly>
+            <input type="text" id="tm-iso-input" >
         </div>
 
         <div class="tm-buttons">
