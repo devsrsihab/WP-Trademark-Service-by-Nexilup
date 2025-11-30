@@ -36,112 +36,162 @@ class TM_Countries {
     /* ============================================================
        ADD COUNTRY (AJAX)
     ============================================================ */
-    public static function add_country() {
+public static function add_country() {
 
-        check_ajax_referer('tm_countries_nonce', 'nonce');
+    check_ajax_referer('tm_countries_nonce', 'nonce');
 
-        global $wpdb;
-        $table = $wpdb->prefix . 'tm_countries';
+    global $wpdb;
+    $table = $wpdb->prefix . 'tm_countries';
 
-        $name = sanitize_text_field($_POST['name']);
-        $iso  = sanitize_text_field($_POST['iso']);
+    /* ====================================================
+       RECEIVE & SANITIZE FIELDS
+    ==================================================== */
+    $name  = sanitize_text_field($_POST['name']);
+    $iso   = sanitize_text_field($_POST['iso']);
 
-        if (!$name || !$iso) {
-            wp_send_json_error(['message' => 'Country name and ISO are required.']);
-        }
+    $madrid_member     = isset($_POST['madrid_member']) ? intval($_POST['madrid_member']) : 0;
+    $registration_time = sanitize_text_field($_POST['registration_time']);
+    $opposition_period = sanitize_text_field($_POST['opposition_period']);
+    $poa_required      = sanitize_text_field($_POST['poa_required']);
+    $multi_class       = sanitize_text_field($_POST['multi_class']);
+    $evidence_required = sanitize_text_field($_POST['evidence_required']);
+    $protection_term   = sanitize_text_field($_POST['protection_term']);
 
-        // Duplicate Validation
-        $exists = $wpdb->get_var(
-            $wpdb->prepare(
-                "SELECT COUNT(*) FROM $table WHERE country_name=%s OR iso_code=%s",
-                $name,
-                strtoupper($iso)
-            )
-        );
+    // REMARK TYPE (Price rule)
+    $general_remarks   = sanitize_text_field($_POST['general_remarks']);
 
-        if ($exists > 0) {
-            wp_send_json_error(['message' => 'This country already exists.']);
-        }
+    // OTHER Remarks
+    $other_remarks     = sanitize_textarea_field($_POST['other_remarks']);
 
-        $inserted = $wpdb->insert($table, [
-            'country_name' => $name,
-            'iso_code'     => strtoupper($iso),
-            'status'       => 1
-        ]);
+    // Belt & Road
+    $belt_road         = isset($_POST['belt_road']) ? intval($_POST['belt_road']) : 0;
 
-        if (!$inserted) {
-            wp_send_json_error(['message' => 'Database insert failed.']);
-        }
-
-        $id = $wpdb->insert_id;
-
-        wp_send_json_success([
-            'message' => 'Country added successfully.',
-            'country' => [
-                'id'   => $id,
-                'name' => $name,
-                'iso'  => strtoupper($iso),
-                'status' => 1
-            ]
-        ]);
+    if (!$name || !$iso) {
+        wp_send_json_error(['message' => 'Country name and ISO code are required.']);
     }
 
-    /* ============================================================
-       UPDATE COUNTRY (AJAX)
-    ============================================================ */
-    public static function update_country() {
+    /* ====================================================
+       CHECK DUPLICATES
+    ==================================================== */
+    $exists = $wpdb->get_var(
+        $wpdb->prepare(
+            "SELECT COUNT(*) FROM $table WHERE country_name=%s OR iso_code=%s",
+            $name,
+            strtoupper($iso)
+        )
+    );
 
-        check_ajax_referer('tm_countries_nonce', 'nonce');
-
-        global $wpdb;
-        $table = $wpdb->prefix . 'tm_countries';
-
-        $id     = intval($_POST['id']);
-        $name   = sanitize_text_field($_POST['name']);
-        $iso    = sanitize_text_field($_POST['iso']);
-        $status = intval($_POST['status']);
-
-        if (!$id || !$name || !$iso) {
-            wp_send_json_error(['message' => 'Invalid data.']);
-        }
-
-        // Duplicate Validation (exclude current row)
-        $exists = $wpdb->get_var(
-            $wpdb->prepare(
-                "SELECT COUNT(*) FROM $table 
-                 WHERE (country_name=%s OR iso_code=%s) AND id != %d",
-                $name,
-                strtoupper($iso),
-                $id
-            )
-        );
-
-        if ($exists > 0) {
-            wp_send_json_error(['message' => 'Country with same name or ISO already exists.']);
-        }
-
-        $updated = $wpdb->update($table, [
-            'country_name' => $name,
-            'iso_code'     => strtoupper($iso),
-            'status'       => $status
-        ], [
-            'id' => $id
-        ]);
-
-        if ($updated === false) {
-            wp_send_json_error(['message' => 'Update failed.']);
-        }
-
-        wp_send_json_success([
-            'message' => 'Country updated.',
-            'country' => [
-                'id'     => $id,
-                'name'   => $name,
-                'iso'    => strtoupper($iso),
-                'status' => $status
-            ]
-        ]);
+    if ($exists > 0) {
+        wp_send_json_error(['message' => 'This country already exists.']);
     }
+
+    /* ====================================================
+       INSERT NEW COUNTRY
+    ==================================================== */
+    $inserted = $wpdb->insert(
+        $table,
+        [
+            'country_name'        => $name,
+            'iso_code'            => strtoupper($iso),
+
+            'is_madrid_member'    => $madrid_member,
+            'registration_time'   => $registration_time,
+            'opposition_period'   => $opposition_period,
+            'poa_required'        => $poa_required,
+            'multi_class_allowed' => $multi_class,
+            'evidence_required'   => $evidence_required,
+            'protection_term'     => $protection_term,
+
+            'general_remarks'     => $general_remarks,
+            'other_remarks'       => $other_remarks,
+            'belt_and_road'       => $belt_road,
+
+            'status'              => 1,
+            'created_at'          => current_time('mysql'),
+            'updated_at'          => current_time('mysql'),
+        ]
+    );
+
+    if (!$inserted) {
+        wp_send_json_error(['message' => 'Database insert failed.']);
+    }
+
+    /* ====================================================
+       RETURN SUCCESS
+    ==================================================== */
+    $id = $wpdb->insert_id;
+
+    wp_send_json_success([
+        'message' => 'Country added successfully.',
+        'country' => [
+            'id'                  => $id,
+            'name'                => $name,
+            'iso'                 => strtoupper($iso),
+            'madrid_member'       => $madrid_member,
+            'registration_time'   => $registration_time,
+            'opposition_period'   => $opposition_period,
+            'poa_required'        => $poa_required,
+            'multi_class'         => $multi_class,
+            'evidence_required'   => $evidence_required,
+            'protection_term'     => $protection_term,
+            'general_remarks'     => $general_remarks,
+            'other_remarks'       => $other_remarks,
+            'belt_and_road'       => $belt_road,
+            'status'              => 1
+        ]
+    ]);
+}
+
+
+
+/* ============================================================
+   UPDATE COUNTRY (AJAX) — FULL UPDATED VERSION
+============================================================ */
+public static function update_country() {
+
+    check_ajax_referer('tm_countries_nonce', 'nonce');
+
+    global $wpdb;
+    $table = $wpdb->prefix . 'tm_countries';
+
+    $id   = intval($_POST['id']);
+    $name = sanitize_text_field($_POST['name']);
+    $iso  = sanitize_text_field($_POST['iso']);
+
+    if (!$id || !$name || !$iso) {
+        wp_send_json_error(['message' => 'Invalid data.']);
+    }
+
+    // Receive all fields
+    $data = [
+        'country_name'        => $name,
+        'iso_code'            => strtoupper($iso),
+        'is_madrid_member'    => intval($_POST['madrid_member']),
+        'registration_time'   => sanitize_text_field($_POST['registration_time']),
+        'opposition_period'   => sanitize_text_field($_POST['opposition_period']),
+        'poa_required'        => sanitize_text_field($_POST['poa_required']),
+        'multi_class_allowed' => sanitize_text_field($_POST['multi_class']),
+        'evidence_required'   => sanitize_text_field($_POST['evidence_required']),
+        'protection_term'     => sanitize_text_field($_POST['protection_term']),
+        'general_remarks'     => sanitize_text_field($_POST['general_remarks']),
+        'other_remarks'       => sanitize_text_field($_POST['other_remarks']),
+        'belt_and_road'       => intval($_POST['belt_road']),
+        'status'              => intval($_POST['status']),
+        'updated_at'          => current_time('mysql'),
+    ];
+
+    // Run update
+    $updated = $wpdb->update($table, $data, ['id' => $id]);
+
+    if ($updated === false) {
+        wp_send_json_error(['message' => 'Update failed']);
+    }
+
+    wp_send_json_success(['message' => 'Country updated successfully', 'country' => $data]);
+}
+
+
+
 
     /* ============================================================
        DELETE COUNTRY (AJAX)

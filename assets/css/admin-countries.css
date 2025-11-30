@@ -8,6 +8,7 @@
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.4);
+  overflow-y: auto; /* Scroll inner content */
 }
 
 .tm-modal-content {
@@ -15,7 +16,12 @@
   margin: auto;
   padding: 25px;
   border-radius: 8px;
-  width: 450px;
+  width: 750px;
+  max-width: 90%;
+  /* FIX */
+  max-height: 90vh; /* Don't exceed screen */
+  overflow-y: auto; /* Scroll inner content */
+  box-sizing: border-box;
 }
 
 .tm-modal-content h2 {
@@ -32,4 +38,10 @@
   width: 100%;
   padding: 8px;
   margin-bottom: 10px;
+}
+.tm-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 25px;
 }

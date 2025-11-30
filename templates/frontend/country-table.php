@@ -52,93 +52,216 @@ $selected_type = isset($_GET['type']) ? sanitize_text_field($_GET['type']) : 'wo
 
 
     <!-- ================= TABLE ================== -->
-    <div class="tm-scroll-x">
-    <table class="tm-pricing-table-pro">
+<?php
+global $wpdb;
 
-        <thead>
-            <tr>
-                <th rowspan="2" class="tm-col-country">Country</th>
+$prices_table = TM_Database::table_name('country_prices');
 
-                <th colspan="2" class="tm-step-head">Step 1</th>
-                <th colspan="2" class="tm-step-head">Step 2</th>
-                <th colspan="2" class="tm-step-head">Step 3</th>
-                <th colspan="2" class="tm-step-head">Total</th>
-            </tr>
+// SORT COUNTRIES ALPHABETICALLY
+usort($countries, function($a, $b) {
+    return strcmp($a->country_name, $b->country_name);
+});
 
-            <tr class="tm-subhead-row">
-                <th>One Class</th><th>Add. Class</th>
-                <th>One Class</th><th>Add. Class</th>
-                <th>One Class</th><th>Add. Class</th>
-                <th>One Class</th><th>Add. Class</th>
-            </tr>
-        </thead>
+// Determine selected type
+$selected_type = isset($_GET['type']) ? sanitize_text_field($_GET['type']) : 'word';
 
-        <tbody>
+// ===== Price Resolver =====
+// function tm_resolve_prices($p, $selected_type)
+// {
+//     $first = floatval($p->first_class_fee);
+//     $add   = floatval($p->additional_class_fee);
+//     $remark = $p->general_remarks;
 
-        <?php foreach ($countries as $c):
+//     // CASE 1 — Filing*
+//     if (strpos($remark, 'filing_') === 0) {
+//         $s1_one = $first;
+//         $s1_add = $add;
 
-            // Fetch pricing for selected mark type
-            $steps = [];
-            for ($s = 1; $s <= 3; $s++) {
-                $steps[$s] = $wpdb->get_row(
-                    $wpdb->prepare(
-                        "SELECT price_one_class, price_add_class
-                         FROM $prices_table
-                         WHERE country_id = %d AND trademark_type = %s AND step_number = %d LIMIT 1",
-                        $c->id,
-                        $selected_type,
-                        $s
-                    )
-                );
-            }
+//         $s2_one = $add;
+//         $s2_add = $add;
 
-            $symbol = '$';
+//         $s3_one = $add;
+//         $s3_add = $add;
+//     }
 
-            // Totals
-            $tot_one = 0;
-            $tot_add = 0;
+//     // CASE 2 — Registration*
+//     elseif (strpos($remark, 'registration_') === 0) {
+//         $s1_one = $add;
+//         $s1_add = $add;
 
-            foreach ($steps as $st) {
-                if ($st) {
-                    $tot_one += (float)$st->price_one_class;
-                    $tot_add += (float)$st->price_add_class;
-                }
-            }
+//         $s2_one = $add;
+//         $s2_add = $add;
 
-            // Single link
-            $country_url = $single_page 
-                ? esc_url(add_query_arg(['country' => $c->iso_code], $single_page)) 
-                : '#';
+//         $s3_one = $add;
+//         $s3_add = $add;
+//     }
+
+//     // CASE 3 — No remark
+//     else {
+//         $s1_one = $first;
+//         $s1_add = $add;
+
+//         $s2_one = $add;
+//         $s2_add = $add;
+
+//         $s3_one = $add;
+//         $s3_add = $add;
+//     }
+
+//     // Combined Mark → double
+//     if ($selected_type === 'combined') {
+//         $s1_one *= 2;  $s1_add *= 2;
+//         $s2_one *= 2;  $s2_add *= 2;
+//         $s3_one *= 2;  $s3_add *= 2;
+//     }
+
+//     return compact('s1_one','s1_add','s2_one','s2_add','s3_one','s3_add');
+// }
+function tm_resolve_prices($p, $selected_type)
+{
+    $first = floatval($p->first_class_fee);
+    $add   = floatval($p->additional_class_fee);
+    $remark = $p->general_remarks;
+
+    $has_filing = (strpos($remark, 'filing_') === 0);
+    $has_reg    = (strpos($remark, 'registration_') === 0);
+
+    /** ================================
+     *  CASE 1 — Filing exists
+     *  (Filing = normal logic)
+     * ================================= */
+    if ($has_filing) {
+        $s1_one = $first;
+        $s1_add = $add;
+
+        $s2_one = $add;
+        $s2_add = $add;
+
+        $s3_one = $add;
+        $s3_add = $add;
+    }
+
+    /** ==========================================
+     *  CASE 2 — Registration exists BUT no filing
+     *  (Use first_class_fee ONLY for Step 1 one class)
+     * =========================================== */
+    elseif ($has_reg) {
+        $s1_one = $first;   // <-- special rule
+        $s1_add = $add;
+
+        $s2_one = $add;
+        $s2_add = $add;
+
+        $s3_one = $add;
+        $s3_add = $add;
+    }
+
+    /** ======================================
+     *  CASE 3 — No remark
+     * ======================================= */
+    else {
+        $s1_one = $first;
+        $s1_add = $add;
+
+        $s2_one = $add;
+        $s2_add = $add;
+
+        $s3_one = $add;
+        $s3_add = $add;
+    }
+
+    /** ======================
+     *  Combined = Double price
+     * ====================== */
+    if ($selected_type === 'combined') {
+        $s1_one *= 2;  $s1_add *= 2;
+        $s2_one *= 2;  $s2_add *= 2;
+        $s3_one *= 2;  $s3_add *= 2;
+    }
+
+    return compact('s1_one','s1_add','s2_one','s2_add','s3_one','s3_add');
+}
+
+?>
+
+<div class="tm-scroll-x">
+<table class="tm-pricing-table-pro">
+
+    <thead>
+        <tr>
+            <th rowspan="2" class="tm-col-country">Country</th>
+            <th colspan="2" class="tm-step-head">Step 1</th>
+            <th colspan="2" class="tm-step-head">Step 2</th>
+            <th colspan="2" class="tm-step-head">Step 3</th>
+            <th colspan="2" class="tm-step-head">Total</th>
+        </tr>
+
+        <tr class="tm-subhead-row">
+            <th>One Class</th><th>Add. Class</th>
+            <th>One Class</th><th>Add. Class</th>
+            <th>One Class</th><th>Add. Class</th>
+            <th>One Class</th><th>Add. Class</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+    <?php foreach ($countries as $c): ?>
+
+        <?php
+        // Get ONE price per country (RULE F)
+        $p = $wpdb->get_row(
+            $wpdb->prepare("SELECT * FROM $prices_table WHERE country_id = %d LIMIT 1", $c->id)
+        );
+
+        if (!$p) continue;
+
+        // Apply pricing rules
+        $fees = tm_resolve_prices($p, $selected_type);
+
+        // Totals
+        $tot_one = $fees['s1_one'] + $fees['s2_one'] + $fees['s3_one'];
+        $tot_add = $fees['s1_add'] + $fees['s2_add'] + $fees['s3_add'];
+
+        $country_url = $single_page
+            ? esc_url(add_query_arg(['country' => $c->iso_code], $single_page))
+            : '#';
         ?>
 
-            <tr>
+        <tr>
 
-                <!-- Country -->
-                <td class="tm-country-cell tm-country-flag-wraper">
-                    <span class="flag-shadowed flag-shadowed-<?php echo esc_attr($c->iso_code); ?>"></span>
+            <!-- COUNTRY CELL -->
+            <td class="tm-country-cell tm-country-flag-wraper">
+                <span class="flag-shadowed flag-shadowed-<?php echo esc_attr($c->iso_code); ?>"></span>
+                <a href="<?php echo $country_url; ?>" class="tm-country-link">
+                    <strong class="tm-country-name"><?php echo esc_html($c->country_name); ?></strong>
+                </a>
+            </td>
 
-                    <a href="<?php echo $country_url; ?>" class="tm-country-link">
-                        <strong class="tm-country-name"><?php echo esc_html($c->country_name); ?></strong>
-                    </a>
-                </td>
+            <!-- STEP 1 -->
+            <td><?php echo number_format($fees['s1_one'], 2); ?></td>
+            <td><?php echo number_format($fees['s1_add'], 2); ?></td>
 
-                <!-- Prices by Step -->
-                <?php for ($s = 1; $s <= 3; $s++): ?>
-                    <td><?php echo $steps[$s] ? $symbol . number_format($steps[$s]->price_one_class, 2) : '—'; ?></td>
-                    <td><?php echo $steps[$s] ? $symbol . number_format($steps[$s]->price_add_class, 2) : '—'; ?></td>
-                <?php endfor; ?>
+            <!-- STEP 2 -->
+            <td><?php echo number_format($fees['s2_one'], 2); ?></td>
+            <td><?php echo number_format($fees['s2_add'], 2); ?></td>
 
-                <!-- Totals -->
-                <td><strong><?php echo $symbol . number_format($tot_one, 2); ?></strong></td>
-                <td><strong><?php echo $symbol . number_format($tot_add, 2); ?></strong></td>
+            <!-- STEP 3 -->
+            <td><?php echo number_format($fees['s3_one'], 2); ?></td>
+            <td><?php echo number_format($fees['s3_add'], 2); ?></td>
 
-            </tr>
+            <!-- TOTAL -->
+            <td><strong><?php echo number_format($tot_one, 2); ?></strong></td>
+            <td><strong><?php echo number_format($tot_add, 2); ?></strong></td>
 
-        <?php endforeach; ?>
+        </tr>
 
-        </tbody>
-    </table>
-    </div>
+    <?php endforeach; ?>
+
+    </tbody>
+</table>
+</div>
+
 
 
     <!-- ================= PAGINATION ================== -->

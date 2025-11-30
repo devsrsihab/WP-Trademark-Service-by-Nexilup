@@ -280,58 +280,84 @@
   });
 
   /* ========================================================
-       ADD COUNTRY (AJAX)
-    ======================================================== */
+   ADD COUNTRY (AJAX) — FULL FIX
+======================================================== */
   $("#tm-save-country").on("click", function () {
-    // const country = $("#tm-country-select").val();
-    const country = $("#tm-country-input").val().trim();
+    const data = {
+      action: "tm_add_country",
+      nonce: tmCountriesNonce,
 
-    const iso = $("#tm-iso-input").val();
+      name: $("#tm-country-input").val().trim(),
+      iso: $("#tm-iso-input").val().trim(),
 
-    if (!country || !iso) {
+      madrid_member: $("#tm-is-madrid").val(),
+      poa_required: $("#tm-poa-required").val(),
+      multi_class: $("#tm-multiclass").val(),
+      evidence_required: $("#tm-evidence").val(),
+
+      registration_time: $("#tm-registration-time").val(),
+      opposition_period: $("#tm-opposition").val(),
+      protection_term: $("#tm-protection-term").val(),
+
+      general_remarks: $("#tm-remark-type").val(),
+      other_remarks: $("#tm-other-remarks").val(),
+
+      belt_road: $("#tm-belt-road").val(),
+    };
+
+    if (!data.name || !data.iso) {
       alert("Please enter both country name and ISO code.");
       return;
     }
 
-    $.ajax({
-      url: tmCountriesAjax,
-      type: "POST",
-      data: {
-        action: "tm_add_country",
-        name: country,
-        iso: iso,
-        nonce: tmCountriesNonce,
-      },
-      success: function (response) {
-        if (!response.success) {
-          alert(response.data.message);
-          return;
-        }
+    $.post(tmCountriesAjax, data, function (response) {
+      if (!response.success) {
+        alert(response.data.message);
+        return;
+      }
 
-        const c = response.data.country;
+      closeModal("#tm-add-modal");
 
-        const row = `
-                    <tr data-id="${c.id}">
-                        <td>${c.name}</td>
-                        <td>${c.iso}</td>
-                        <td><span class="tm-status-active">Active</span></td>
-                        <td>
-                            <button class="button tm-edit"
-                                data-id="${c.id}"
-                                data-name="${c.name}"
-                                data-iso="${c.iso}"
-                                data-status="1">Edit</button>
+      // reload the page
+      return location.reload();
 
-                            <button class="button tm-delete" 
-                                data-id="${c.id}">Delete</button>
-                        </td>
-                    </tr>
-                `;
+      //       const c = response.data.country;
 
-        $("#tm-country-list").append(row);
+      //       const row = `
+      // <tr class="tm-row"
+      //     data-id="${c.id}"
+      //     data-name="${c.name}"
+      //     data-iso="${c.iso}"
+      //     data-madrid="${c.madrid_member}"
+      //     data-registration="${c.registration_time}"
+      //     data-opposition="${c.opposition_period}"
+      //     data-poa="${c.poa_required}"
+      //     data-multiclass="${c.multi_class}"
+      //     data-evidence="${c.evidence_required}"
+      //     data-protection="${c.protection_term}"
+      //     data-remark="${c.general_remarks}"
+      //     data-other="${c.other_remarks}"
+      //     data-beltroad="${c.belt_and_road}"
+      //     data-status="${c.status}"
+      // >
+      //     <td>${c.name}</td>
+      //     <td>${c.iso}</td>
+      //     <td>${c.madrid_member == 1 ? "Yes" : "No"}</td>
+      //     <td>${c.opposition_period || "—"}</td>
+      //     <td>${c.poa_required || "—"}</td>
+      //     <td>${c.multi_class || "—"}</td>
+      //     <td>${c.evidence_required || "—"}</td>
+      //     <td>${c.protection_term || "—"}</td>
+      //     <td>${c.belt_and_road == 1 ? "Yes" : "No"}</td>
+      //     <td><span class="tm-status-active">Active</span></td>
+      //     <td>
+      //         <button class="button tm-edit">Edit</button>
+      //         <button class="button tm-delete" data-id="${c.id}">Delete</button>
+      //     </td>
+      // </tr>
+      // `;
 
-        closeModal("#tm-add-modal");
-      },
+      //       $("#tm-country-list").append(row);
     });
   });
 
@@ -364,14 +390,30 @@
     );
   });
 
-  /* ========================================================
-       OPEN EDIT MODAL
-    ======================================================== */
+  /* ================================================
+   OPEN EDIT COUNTRY MODAL — ALL VALUES LOADED
+================================================ */
   $(document).on("click", ".tm-edit", function () {
-    $("#tm-edit-id").val($(this).data("id"));
-    $("#tm-edit-name").val($(this).data("name"));
-    $("#tm-edit-iso").val($(this).data("iso"));
-    $("#tm-edit-status").val($(this).data("status"));
+    const row = $(this).closest("tr");
+
+    $("#tm-edit-id").val(row.data("id"));
+    $("#tm-edit-name").val(row.data("name"));
+    $("#tm-edit-iso").val(row.data("iso"));
+
+    $("#tm-edit-is-madrid").val(row.data("madrid"));
+    $("#tm-edit-poa-required").val(row.data("poa"));
+    $("#tm-edit-multiclass").val(row.data("multi"));
+    $("#tm-edit-evidence").val(row.data("evidence"));
+
+    $("#tm-edit-registration-time").val(row.data("registration"));
+    $("#tm-edit-opposition").val(row.data("opposition"));
+    $("#tm-edit-protection-term").val(row.data("protection"));
+
+    $("#tm-edit-remark-type").val(row.data("remark"));
+    $("#tm-edit-other-remarks").val(row.data("other"));
+
+    $("#tm-edit-belt-road").val(row.data("belt"));
+    $("#tm-edit-status").val(row.data("status"));
 
     openModal("#tm-edit-modal");
   });
@@ -380,51 +422,38 @@
        UPDATE COUNTRY
     ======================================================== */
   $("#tm-update-country").on("click", function () {
-    const id = $("#tm-edit-id").val();
-    const name = $("#tm-edit-name").val();
-    const iso = $("#tm-edit-iso").val();
-    const status = $("#tm-edit-status").val();
-
-    if (!name || !iso) {
-      alert("Both fields are required.");
-      return;
-    }
-
     $.ajax({
       url: tmCountriesAjax,
       type: "POST",
       data: {
         action: "tm_update_country",
-        id,
-        name,
-        iso,
-        status,
         nonce: tmCountriesNonce,
+
+        id: $("#tm-edit-id").val(),
+        name: $("#tm-edit-name").val(),
+        iso: $("#tm-edit-iso").val(),
+        status: $("#tm-edit-status").val(),
+
+        madrid_member: $("#tm-edit-is-madrid").val(),
+        registration_time: $("#tm-edit-registration-time").val(),
+        opposition_period: $("#tm-edit-opposition").val(),
+        poa_required: $("#tm-edit-poa-required").val(),
+        multi_class: $("#tm-edit-multiclass").val(),
+        evidence_required: $("#tm-edit-evidence").val(),
+        protection_term: $("#tm-edit-protection-term").val(),
+
+        general_remarks: $("#tm-edit-remark-type").val(),
+        other_remarks: $("#tm-edit-other-remarks").val(),
+        belt_road: $("#tm-edit-belt-road").val(),
       },
-      success: function (response) {
-        if (!response.success) {
-          alert(response.data.message);
+
+      success: function (res) {
+        if (!res.success) {
+          alert(res.data.message);
           return;
         }
 
-        const row = $(`tr[data-id='${id}']`);
-
-        row
-          .find("td:nth-child(1) .tm-flag")
-          .attr("class", "tm-flag flag-shadowed-" + iso);
-
-        row.find("td:nth-child(2)").text(name);
-        row.find("td:nth-child(3)").text(iso);
-
-        row
-          .find("td:nth-child(4)")
-          .html(
-            status == 1
-              ? '<span class="tm-status-active">Active</span>'
-              : '<span class="tm-status-inactive">Inactive</span>'
-          );
-
-        closeModal("#tm-edit-modal");
+        location.reload(); // safest fix
       },
     });
   });

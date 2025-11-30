@@ -43,39 +43,55 @@ class TM_Database {
 
         $sql1 = "CREATE TABLE $countries_table (
             id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+
             iso_code VARCHAR(5) NOT NULL,
             country_name VARCHAR(150) NOT NULL,
+
+            is_madrid_member TINYINT(1) NOT NULL DEFAULT 0,
+            registration_time VARCHAR(100) DEFAULT NULL,
+            opposition_period VARCHAR(100) DEFAULT NULL,
+            poa_required VARCHAR(100) DEFAULT NULL,
+            multi_class_allowed VARCHAR(20) DEFAULT NULL,
+            evidence_required VARCHAR(20) DEFAULT NULL,
+            protection_term VARCHAR(255) DEFAULT NULL,
+
+            general_remarks VARCHAR(255) DEFAULT NULL,
+            other_remarks TEXT DEFAULT NULL,
+            belt_and_road VARCHAR(10) DEFAULT NULL,
+
             status TINYINT(1) NOT NULL DEFAULT 1,
             created_at DATETIME NOT NULL,
             updated_at DATETIME NOT NULL,
+
             PRIMARY KEY (id),
-            UNIQUE KEY iso_code (iso_code)
+            UNIQUE KEY iso_code_idx (iso_code)
         ) $charset;";
 
+
+
         /* ============================================================
-             COUNTRY PRICES TABLE
+        COUNTRY PRICES TABLE - NEW STRUCTURE (NO STEPS)
         ============================================================ */
         $price_table = self::table_name('country_prices');
 
         $sql2 = "CREATE TABLE $price_table (
             id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             country_id BIGINT(20) UNSIGNED NOT NULL,
-            trademark_type ENUM('word','figurative','combined') NOT NULL,
-            step_number TINYINT(3) UNSIGNED NOT NULL,
-            price_one_class DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-            price_add_class DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+            first_class_fee DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+            additional_class_fee DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+            general_remarks TEXT DEFAULT NULL,
 
-            /* NEW EXTRA PRICING COLUMNS */
             priority_claim_fee DECIMAL(10,2) NOT NULL DEFAULT 0.00,
             poa_late_fee DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-
-
             currency CHAR(3) NOT NULL DEFAULT 'USD',
             created_at DATETIME NOT NULL,
             updated_at DATETIME NOT NULL,
+
             PRIMARY KEY (id),
-            KEY country_step (country_id, step_number, trademark_type)
+            KEY country_idx (country_id)
         ) $charset;";
+
+
 
         /* ============================================================
              SERVICE CONDITIONS TABLE
@@ -85,13 +101,17 @@ class TM_Database {
         $sql3 = "CREATE TABLE $conditions_table (
             id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             country_id BIGINT(20) UNSIGNED NOT NULL,
-            step_number TINYINT(3) UNSIGNED NOT NULL,
             content LONGTEXT DEFAULT NULL,
             created_at DATETIME NOT NULL,
             updated_at DATETIME NOT NULL,
             PRIMARY KEY (id),
-            KEY country_step (country_id, step_number)
+            KEY country_idx (country_id)
         ) $charset;";
+
+
+
+
+
 
         /* ============================================================
              OWNER PROFILES TABLE

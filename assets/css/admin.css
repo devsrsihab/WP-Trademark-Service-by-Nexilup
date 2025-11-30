@@ -33,21 +33,18 @@
   height: 100vh; /* Better for ensuring it covers the exact viewport height */
   background: rgba(0, 0, 0, 0.5);
   z-index: 99999;
-
-  /* Use Flexbox to easily center the dialog (important for responsiveness) */
-  display: flex;
-  align-items: center; /* Vertically center the dialog */
-  justify-content: center; /* Horizontally center the dialog */
   overflow-y: auto; /* IMPORTANT: Allows the entire modal background (and dialog) to scroll if the content is taller than the viewport */
   padding: 10px; /* Padding for the edges on small screens */
 }
 .tm-modal-inner {
   background: #fff;
-  width: 600px;
+  width: 750px;
+  max-width: 90%;
   margin: 80px auto;
   padding: 20px;
   border-radius: 8px;
-  max-height: 80vh;
+  height: auto;
+  max-height: 90vh;
   overflow-y: auto;
   position: relative;
 }
