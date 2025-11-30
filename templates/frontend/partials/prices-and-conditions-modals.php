@@ -1,136 +1,186 @@
-    <!-- =====================================================
-         PRICES MODAL (FULL DYNAMIC NOMINUS STYLE)
-    ====================================================== -->
-    <div id="tm-prices-modal" class="tm-modal" aria-hidden="true">
-        <div class="tm-modal-backdrop"></div>
+<?php
+/**
+ * Prices & Service Conditions Modal
+ */
+if (!defined('ABSPATH')) exit;
 
-        <div class="tm-modal-dialog" role="dialog" aria-modal="true">
+global $wpdb;
 
-            <span class="tm-modal-close" aria-label="Close">&times;</span>
+/* =======================================================
+   1) FETCH PRICE ROW FOR THIS COUNTRY
+======================================================= */
+$prices_table = TM_Database::table_name('country_prices');
 
-            <h2 class="tm-modal-title">Trademark Registration Prices</h2>
+$p = $wpdb->get_row(
+    $wpdb->prepare("SELECT * FROM $prices_table WHERE country_id = %d LIMIT 1", $country->id)
+);
 
-            <p class="tm-modal-subtitle">
-                Prices for trademark registration in
-                <strong><?php echo esc_html($country->country_name); ?></strong>
-            </p>
+if (!$p) {
+    $base_one = 0;
+    $base_add = 0;
+    $currency = "USD";
+} else {
+    $base_one = floatval($p->first_class_fee);
+    $base_add = floatval($p->additional_class_fee);
+    $currency = $p->currency ?: 'USD';
+}
 
-            <p class="tm-modal-currency-note">
-                Prices are in <?php echo esc_html($currency); ?>
-            </p>
+/* =======================================================
+   2) FETCH SERVICE CONDITIONS (only 1 allowed per country)
+======================================================= */
+$sc_table = TM_Database::table_name('service_conditions');
 
-            <!-- Tabs -->
-            <div class="tm-modal-tabs">
-                <span class="tm-prices-tab is-active" data-type="word">WORD MARK</span>
-                <span class="tm-prices-tab" data-type="figurative">FIGURATIVE MARK</span>
-                <span class="tm-prices-tab" data-type="combined">COMBINED MARK</span>
-            </div>
+$sc_item = $wpdb->get_row(
+    $wpdb->prepare("SELECT * FROM $sc_table WHERE country_id = %d LIMIT 1", $country->id)
+);
 
-            <!-- Panels -->
-            <div class="tm-modal-body">
+// Determine if available
+$has_any_sc = ($sc_item && trim($sc_item->content) !== "");
+?>
 
-                <?php foreach (['word','figurative','combined'] as $type): ?>
+<!-- =====================================================
+     PRICES MODAL — FLAT PRICE MODEL
+====================================================== -->
+<div id="tm-prices-modal" class="tm-modal" aria-hidden="true">
+    <div class="tm-modal-backdrop"></div>
 
-                    <div class="tm-prices-panel <?php echo $type === 'word' ? 'is-active' : ''; ?>"
-                        data-type="<?php echo esc_attr($type); ?>">
+    <div class="tm-modal-dialog" role="dialog" aria-modal="true">
 
-                        <?php
-                        $has_price = false;
+        <span class="tm-modal-close" aria-label="Close">&times;</span>
 
-                        for ($step = 1; $step <= 3; $step++):
-                            $row = $steps_filtered[$type][$step] ?? null;
-                            if (!$row) continue;
+        <h2 class="tm-modal-title">Trademark Registration Prices</h2>
 
-                            // Hide step card if both prices <= 0
-                            $one = (float)$row->price_one_class;
-                            $add = (float)$row->price_add_class;
+        <p class="tm-modal-subtitle">
+            Prices for the trademark registration process in
+            <strong><?php echo esc_html($country->country_name); ?></strong>.
+        </p>
 
-                            if ($one <= 0 && $add <= 0) continue;
+        <p class="tm-modal-currency-note">
+            Prices are in <?php echo esc_html($currency); ?> U.S. Dollar
+        </p>
 
-                            $has_price = true;
-                        ?>
+        <!-- Tabs -->
+        <div class="tm-modal-tabs">
+            <span class="tm-prices-tab is-active" data-type="word">WORD MARK</span>
+            <span class="tm-prices-tab" data-type="figurative">FIGURATIVE MARK</span>
+            <span class="tm-prices-tab" data-type="combined">COMBINED MARK</span>
+        </div>
 
-                        <div class="tm-prices-step-card">
-                            <h3>
-                                Step <?php echo $step; ?> —
-                                <?php echo esc_html($by_step[$step]->step_title ?? 'Trademark Step'); ?>
-                            </h3>
+        <!-- Panels -->
+        <div class="tm-modal-body">
 
-                            <div class="tm-prices-step-table">
+            <?php $types = ['word', 'figurative', 'combined']; ?>
 
-                                <div class="tm-prices-row">
-                                    <span>One Class</span>
-                                    <strong><?php echo tm_format_price($row->price_one_class); ?></strong>
-                                </div>
+            <?php foreach ($types as $type): ?>
+                <?php
+                $multiplier = ($type === 'combined') ? 2 : 1;
 
-                                <div class="tm-prices-row">
-                                    <span>Add. Class</span>
-                                    <strong><?php echo tm_format_price($row->price_add_class); ?></strong>
-                                </div>
+                $s1_one = $base_one * $multiplier;
+                $s1_add = $base_add * $multiplier;
 
+                $s2_one = $base_one * $multiplier;
+                $s2_add = $base_add * $multiplier;
+
+                $s3_one = $base_one * $multiplier;
+                $s3_add = $base_add * $multiplier;
+                ?>
+            
+                <div class="tm-prices-panel <?php echo $type === 'word' ? 'is-active' : ''; ?>"
+                     data-type="<?php echo esc_attr($type); ?>">
+
+                    <!-- STEP 1 -->
+                    <div class="tm-prices-step-card">
+                        <h3>Step 1 — Comprehensive Trademark Study</h3>
+                        <div class="tm-prices-step-table">
+                            <div class="tm-prices-row">
+                                <span>One Class</span>
+                                <strong><?php echo tm_format_price($s1_one); ?></strong>
+                            </div>
+                            <div class="tm-prices-row">
+                                <span>Add. Class</span>
+                                <strong><?php echo tm_format_price($s1_add); ?></strong>
                             </div>
                         </div>
-
-                        <?php endfor; ?>
-
-                        <?php if (!$has_price): ?>
-                            <p class="tm-no-prices">No price data available for this mark type.</p>
-                        <?php endif; ?>
-
                     </div>
 
-                <?php endforeach; ?>
-
-            </div>
-
-            <?php if ($has_any_sc): ?>
-                <p class="tm-modal-footnote">
-                    Please review <a href="#" class="tm-open-service-conditions">Service Conditions</a>
-                </p>
-            <?php endif; ?>
-
-        </div>
-    </div>
-
-
-
-    <!-- ===========================================
-         SERVICE CONDITIONS MODAL (DYNAMIC)
-    =========================================== -->
-    <div id="tm-service-conditions-modal" class="tm-modal" aria-hidden="true">
-        <div class="tm-modal-backdrop"></div>
-
-        <div class="tm-modal-dialog" role="dialog" aria-modal="true">
-
-            <button class="tm-modal-close" aria-label="Close">&times;</button>
-
-            <h2 class="tm-modal-title">Service Conditions</h2>
-
-            <div class="tm-service-conditions-body">
-
-                <?php if ($has_any_sc): ?>
-
-                    <?php if (is_array($sc_items)): ?>
-                        <?php foreach ($sc_items as $sc): ?>
-                            <?php $sn = (int)$sc->step_number; ?>
-                            <h3><?php echo esc_html($default_titles[$sn] ?? ("Step " . $sn)); ?></h3>
-                            <div class="tm-sc-block">
-                                <?php echo wp_kses_post($sc->content); ?>
+                    <!-- STEP 2 -->
+                    <div class="tm-prices-step-card">
+                        <h3>Step 2 — Trademark Application Filing</h3>
+                        <div class="tm-prices-step-table">
+                            <div class="tm-prices-row">
+                                <span>One Class</span>
+                                <strong><?php echo tm_format_price($s2_one); ?></strong>
                             </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <?php echo wp_kses_post($service_conditions); ?>
-                    <?php endif; ?>
+                            <div class="tm-prices-row">
+                                <span>Add. Class</span>
+                                <strong><?php echo tm_format_price($s2_add); ?></strong>
+                            </div>
+                        </div>
+                    </div>
 
-                <?php else: ?>
-                    <p>No service conditions available for this country.</p>
-                <?php endif; ?>
+                    <!-- STEP 3 -->
+                    <!-- <div class="tm-prices-step-card">
+                        <h3>Step 3 — Registration Certificate</h3>
+                        <div class="tm-prices-step-table">
+                            <div class="tm-prices-row">
+                                <span>One Class</span>
+                                <strong><?php echo tm_format_price($s3_one); ?></strong>
+                            </div>
+                            <div class="tm-prices-row">
+                                <span>Add. Class</span>
+                                <strong><?php echo tm_format_price($s3_add); ?></strong>
+                            </div>
+                        </div>
+                    </div> -->
 
-            </div>
+                </div>
 
-            <div class="tm-service-conditions-footer">
-                <button class="tm-btn-primary tm-close-service-conditions">OK</button>
-            </div>
+            <?php endforeach; ?>
 
         </div>
+
+
+        <!-- Show only if SC exists -->
+        <?php if ($has_any_sc): ?>
+            <p class="tm-modal-footnote">
+                Please review 
+                <a href="#" class="tm-open-service-conditions" 
+                   style="color:#0066cc; text-decoration:underline; font-weight:600;">
+                    Service Conditions
+                </a>.
+                Note that prices include official fees.
+            </p>
+        <?php endif; ?>
+
     </div>
+</div>
+
+
+<!-- =====================================================
+     SERVICE CONDITIONS MODAL
+====================================================== -->
+<div id="tm-service-conditions-modal" class="tm-modal" aria-hidden="true">
+    <div class="tm-modal-backdrop"></div>
+
+    <div class="tm-modal-dialog" role="dialog" aria-modal="true">
+
+        <button class="tm-modal-close" aria-label="Close">&times;</button>
+
+        <h2 class="tm-modal-title">Service Conditions</h2>
+
+        <div class="tm-service-conditions-body">
+            <?php if ($has_any_sc): ?>
+                <div class="tm-sc-block">
+                    <?php echo wp_kses_post($sc_item->content); ?>
+                </div>
+            <?php else: ?>
+                <p>No service conditions available for this country.</p>
+            <?php endif; ?>
+        </div>
+
+        <div class="tm-service-conditions-footer">
+            <button class="tm-btn-primary tm-close-service-conditions">OK</button>
+        </div>
+
+    </div>
+</div>

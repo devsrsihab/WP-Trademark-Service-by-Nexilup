@@ -36,7 +36,7 @@ body.tm-modal-open {
 =========================== */
 .tm-modal-dialog {
   position: relative;
-  max-width: 650px;
+  max-width: 750px;
   margin: 60px auto;
   background: #fff;
   padding: 25px 35px;
@@ -63,6 +63,7 @@ body.tm-modal-open {
 /* ===========================
    CLOSE BUTTON
 =========================== */
+
 .tm-modal-close {
   position: absolute;
   right: 12px;
@@ -72,10 +73,16 @@ body.tm-modal-open {
   border: none;
   cursor: pointer;
   color: #666;
+  padding: 13px 24px !important;
+  border-radius: 4px !important;
 }
 
 .tm-modal-close:hover {
   color: #000;
+}
+button.tm-btn-primary.tm-close-service-conditions {
+  padding: 12px 32px !important;
+  border-radius: 4px;
 }
 
 /* ===========================
