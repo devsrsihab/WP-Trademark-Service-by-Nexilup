@@ -95,17 +95,17 @@ class TM_Country_Prices {
                 return;
             }
 
-            if (in_array($old_rule, $filing_rules) && $is_filing) {
-                self::$error_message = "This country already has a Filing rule.";
-                self::$old_input = $_POST;
-                return;
-            }
+            // if (in_array($old_rule, $filing_rules) && $is_filing) {
+            //     self::$error_message = "This country already has a Filing rule.";
+            //     self::$old_input = $_POST;
+            //     return;
+            // }
 
-            if (in_array($old_rule, $registration_rules) && $is_registration) {
-                self::$error_message = "This country already has a Registration rule.";
-                self::$old_input = $_POST;
-                return;
-            }
+            // if (in_array($old_rule, $registration_rules) && $is_registration) {
+            //     self::$error_message = "This country already has a Registration rule.";
+            //     self::$old_input = $_POST;
+            //     return;
+            // }
         }
 
         // Insert NEW RECORD
@@ -128,92 +128,90 @@ class TM_Country_Prices {
     /* ============================================================
        UPDATE PRICE (Normal POST)
     ============================================================ */
-public static function update_price() {
+    public static function update_price() {
 
-    if (!wp_verify_nonce($_POST['nonce'], 'tm_country_prices_nonce')) {
-        self::$error_message = "Security check failed.";
-        self::$old_input = $_POST;
-        return;
+        if (!wp_verify_nonce($_POST['nonce'], 'tm_country_prices_nonce')) {
+            self::$error_message = "Security check failed.";
+            self::$old_input = $_POST;
+            return;
+        }
+
+        global $wpdb;
+        $table = self::table();
+
+        $id                 = intval($_POST['id']);
+        $country            = intval($_POST['country']);
+        $general_remarks    = sanitize_text_field($_POST['general_remarks']);
+
+        $first_fee          = floatval($_POST['first_class_fee']);
+        $add_fee            = floatval($_POST['additional_class_fee']);
+        $priority_claim_fee = floatval($_POST['priority_claim_fee']);
+        $poa_late_fee       = floatval($_POST['poa_late_fee']);
+
+        // Validation groups
+        $filing_rules = ["filing_20_goods", "filing_basic"];
+        $registration_rules = ["registration_5_years", "registration_10_years"];
+
+        $is_filing       = in_array($general_remarks, $filing_rules);
+        $is_registration = in_array($general_remarks, $registration_rules);
+
+        /*
+        * 1️⃣ Load ANY OTHER record for this country,
+        *    EXCEPT the one currently being edited
+        */
+        $existing = $wpdb->get_row($wpdb->prepare("
+            SELECT * FROM $table 
+            WHERE country_id = %d AND id != %d
+        ", $country, $id));
+
+        if ($existing) {
+            $old_rule = trim($existing->general_remarks);
+
+            // ❌ Country already has an empty record
+            if ($old_rule === "") {
+                self::$error_message = "This country already has an empty pricing rule. You cannot add another rule.";
+                self::$old_input = $_POST;
+                return;
+            }
+
+            // ❌ Cannot save empty rule if pricing exists
+            if ($general_remarks === "") {
+                self::$error_message = "Cannot save an empty pricing rule because this country already has pricing.";
+                self::$old_input = $_POST;
+                return;
+            }
+
+            // ❌ Prevent second Filing rule
+            if (in_array($old_rule, $filing_rules) && $is_filing) {
+                self::$error_message = "This country already has a Filing Fee rule.";
+                self::$old_input = $_POST;
+                return;
+            }
+
+            // ❌ Prevent second Registration rule
+            if (in_array($old_rule, $registration_rules) && $is_registration) {
+                self::$error_message = "This country already has a Registration Fee rule.";
+                self::$old_input = $_POST;
+                return;
+            }
+        }
+
+        // 2️⃣ If validation passed → update
+        $wpdb->update(
+            $table,
+            [
+                'general_remarks'      => $general_remarks,
+                'first_class_fee'      => $first_fee,
+                'additional_class_fee' => $add_fee,
+                'priority_claim_fee'   => $priority_claim_fee,
+                'poa_late_fee'         => $poa_late_fee,
+                'updated_at'           => current_time('mysql')
+            ],
+            ['id' => $id]
+        );
+
+        self::redirect_msg("Price updated successfully");
     }
-
-    global $wpdb;
-    $table = self::table();
-
-    $id                 = intval($_POST['id']);
-    $country            = intval($_POST['country']);
-    $general_remarks    = sanitize_text_field($_POST['general_remarks']);
-
-    $first_fee          = floatval($_POST['first_class_fee']);
-    $add_fee            = floatval($_POST['additional_class_fee']);
-    $priority_claim_fee = floatval($_POST['priority_claim_fee']);
-    $poa_late_fee       = floatval($_POST['poa_late_fee']);
-
-    // Validation groups
-    $filing_rules = ["filing_20_goods", "filing_basic"];
-    $registration_rules = ["registration_5_years", "registration_10_years"];
-
-    $is_filing       = in_array($general_remarks, $filing_rules);
-    $is_registration = in_array($general_remarks, $registration_rules);
-
-    /*
-     * 1️⃣ Load ANY OTHER record for this country,
-     *    EXCEPT the one currently being edited
-     */
-    $existing = $wpdb->get_row($wpdb->prepare("
-        SELECT * FROM $table 
-        WHERE country_id = %d AND id != %d
-    ", $country, $id));
-
-    if ($existing) {
-        $old_rule = trim($existing->general_remarks);
-
-        // ❌ Country already has an empty record
-        if ($old_rule === "") {
-            self::$error_message = "This country already has an empty pricing rule. You cannot add another rule.";
-            self::$old_input = $_POST;
-            return;
-        }
-
-        // ❌ Cannot save empty rule if pricing exists
-        if ($general_remarks === "") {
-            self::$error_message = "Cannot save an empty pricing rule because this country already has pricing.";
-            self::$old_input = $_POST;
-            return;
-        }
-
-        // ❌ Prevent second Filing rule
-        if (in_array($old_rule, $filing_rules) && $is_filing) {
-            self::$error_message = "This country already has a Filing Fee rule.";
-            self::$old_input = $_POST;
-            return;
-        }
-
-        // ❌ Prevent second Registration rule
-        if (in_array($old_rule, $registration_rules) && $is_registration) {
-            self::$error_message = "This country already has a Registration Fee rule.";
-            self::$old_input = $_POST;
-            return;
-        }
-    }
-
-    // 2️⃣ If validation passed → update
-    $wpdb->update(
-        $table,
-        [
-            'general_remarks'      => $general_remarks,
-            'first_class_fee'      => $first_fee,
-            'additional_class_fee' => $add_fee,
-            'priority_claim_fee'   => $priority_claim_fee,
-            'poa_late_fee'         => $poa_late_fee,
-            'updated_at'           => current_time('mysql')
-        ],
-        ['id' => $id]
-    );
-
-    self::redirect_msg("Price updated successfully");
-}
-
-
 
 
     /* ============================================================
@@ -230,6 +228,7 @@ public static function update_price() {
 
         self::redirect_msg("Price deleted successfully");
     }
+
 
     /* ============================================================
        REDIRECT HELPER
@@ -273,4 +272,45 @@ public static function update_price() {
             "max_pages" => ceil($total / $per_page)
         ];
     }
+
+    /**
+     * UNIVERSAL PRICE FETCHER
+     * Always returns EXACTLY one price row per country.
+     * Auto-creates a default row if missing.
+     */
+    public static function get_price_row($country_id)
+    {
+        global $wpdb;
+        $table = self::table();
+
+        // Try to load the single price row
+        $row = $wpdb->get_row(
+            $wpdb->prepare("SELECT * FROM $table WHERE country_id = %d LIMIT 1", $country_id)
+        );
+
+        // If missing → auto-create new blank price row
+        if (!$row) {
+            $wpdb->insert($table, [
+                'country_id'           => $country_id,
+                'general_remarks'      => '',
+                'first_class_fee'      => 0,
+                'additional_class_fee' => 0,
+                'priority_claim_fee'   => 0,
+                'poa_late_fee'         => 0,
+                'currency'             => 'USD',
+                'created_at'           => current_time('mysql'),
+                'updated_at'           => current_time('mysql'),
+            ]);
+
+            // Reload
+            $row = $wpdb->get_row(
+                $wpdb->prepare("SELECT * FROM $table WHERE country_id = %d LIMIT 1", $country_id)
+            );
+        }
+
+        return $row;
+    }
+
+
+
 }

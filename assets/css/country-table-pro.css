@@ -20,6 +20,9 @@
   margin-top: 20px;
   padding: 0 10px; /* Add slight padding for mobile viewports */
 }
+.tm-country-name {
+  text-transform: capitalizes;
+}
 
 /* =====================================
    2. Header & Search Layout

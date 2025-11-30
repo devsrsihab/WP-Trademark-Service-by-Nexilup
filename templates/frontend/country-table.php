@@ -65,58 +65,6 @@ usort($countries, function($a, $b) {
 // Determine selected type
 $selected_type = isset($_GET['type']) ? sanitize_text_field($_GET['type']) : 'word';
 
-// ===== Price Resolver =====
-// function tm_resolve_prices($p, $selected_type)
-// {
-//     $first = floatval($p->first_class_fee);
-//     $add   = floatval($p->additional_class_fee);
-//     $remark = $p->general_remarks;
-
-//     // CASE 1 — Filing*
-//     if (strpos($remark, 'filing_') === 0) {
-//         $s1_one = $first;
-//         $s1_add = $add;
-
-//         $s2_one = $add;
-//         $s2_add = $add;
-
-//         $s3_one = $add;
-//         $s3_add = $add;
-//     }
-
-//     // CASE 2 — Registration*
-//     elseif (strpos($remark, 'registration_') === 0) {
-//         $s1_one = $add;
-//         $s1_add = $add;
-
-//         $s2_one = $add;
-//         $s2_add = $add;
-
-//         $s3_one = $add;
-//         $s3_add = $add;
-//     }
-
-//     // CASE 3 — No remark
-//     else {
-//         $s1_one = $first;
-//         $s1_add = $add;
-
-//         $s2_one = $add;
-//         $s2_add = $add;
-
-//         $s3_one = $add;
-//         $s3_add = $add;
-//     }
-
-//     // Combined Mark → double
-//     if ($selected_type === 'combined') {
-//         $s1_one *= 2;  $s1_add *= 2;
-//         $s2_one *= 2;  $s2_add *= 2;
-//         $s3_one *= 2;  $s3_add *= 2;
-//     }
-
-//     return compact('s1_one','s1_add','s2_one','s2_add','s3_one','s3_add');
-// }
 function tm_resolve_prices($p, $selected_type)
 {
     $first = floatval($p->first_class_fee);
@@ -209,10 +157,73 @@ function tm_resolve_prices($p, $selected_type)
     <?php foreach ($countries as $c): ?>
 
         <?php
-        // Get ONE price per country (RULE F)
-        $p = $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM $prices_table WHERE country_id = %d LIMIT 1", $c->id)
+
+        
+        // Fetch ALL prices for this country
+        $rows = $wpdb->get_results(
+            $wpdb->prepare("SELECT * FROM $prices_table WHERE country_id = %d", $c->id)
         );
+
+        if (!$rows) continue;
+
+        // Default = first record
+        $p = $rows[0];
+
+        // --- PRIORITY GROUP 1: Filing ---
+        $filing_basic = null;
+        $filing_other = null;
+
+        foreach ($rows as $r) {
+
+            if (strpos($r->general_remarks, 'filing_basic') === 0) {
+                $filing_basic = $r;
+                break;
+            }
+
+            if (strpos($r->general_remarks, 'filing_') === 0) {
+                $filing_other = $r; // ex: filing_20_goods
+            }
+        }
+
+        // If any filing exists → choose the correct one
+        if ($filing_basic) {
+            $p = $filing_basic;
+        } elseif ($filing_other) {
+            $p = $filing_other;
+        } else {
+
+            // --- PRIORITY GROUP 2: Registration ---
+            $reg_basic = null;
+            $reg_mid = null;
+            $reg_other = null;
+
+            foreach ($rows as $r) {
+
+                if (strpos($r->general_remarks, 'registration_basic') === 0) {
+                    $reg_basic = $r;
+                    break;
+                }
+
+                if (strpos($r->general_remarks, 'registration_5_years') === 0 ||
+                    strpos($r->general_remarks, 'registration_10_years') === 0) {
+                    $reg_mid = $r;
+                }
+
+                if (strpos($r->general_remarks, 'registration_') === 0) {
+                    $reg_other = $r;
+                }
+            }
+
+            if ($reg_basic) {
+                $p = $reg_basic;
+            } elseif ($reg_mid) {
+                $p = $reg_mid;
+            } elseif ($reg_other) {
+                $p = $reg_other;
+            }
+        }
+
+
 
         if (!$p) continue;
 
@@ -234,7 +245,7 @@ function tm_resolve_prices($p, $selected_type)
             <td class="tm-country-cell tm-country-flag-wraper">
                 <span class="flag-shadowed flag-shadowed-<?php echo esc_attr($c->iso_code); ?>"></span>
                 <a href="<?php echo $country_url; ?>" class="tm-country-link">
-                    <strong class="tm-country-name"><?php echo esc_html($c->country_name); ?></strong>
+                    <strong style="text-transform: capitalize" class="tm-country-name"><?php echo esc_html($c->country_name); ?></strong>
                 </a>
             </td>
 

@@ -42,16 +42,23 @@ $old   = TM_Country_Prices::$old_input;
                     <select name="general_remarks">
                         <option value="">Select</option>
 
+                       <option value="filing_basic"
+                            <?php echo (isset($old['general_remarks']) && $old['general_remarks'] === 'filing_basic') ? 'selected' : ''; ?>>
+                            Filing Fee — basic per class
+                        </option>
+
                         <option value="filing_20_goods"
                             <?php echo (isset($old['general_remarks']) && $old['general_remarks'] === 'filing_20_goods') ? 'selected' : ''; ?>>
                             Filing Fee — includes up to 20 goods
                         </option>
 
-                        <option value="filing_basic"
-                            <?php echo (isset($old['general_remarks']) && $old['general_remarks'] === 'filing_basic') ? 'selected' : ''; ?>>
-                            Filing Fee — basic per class
-                        </option>
+                
 
+                        <option value="registration_basic"
+                            <?php echo (isset($old['general_remarks']) && $old['general_remarks'] === 'registration_basic') ? 'selected' : ''; ?>>
+                            Registration Fee — basic per class
+                        </option>
+                        
                         <option value="registration_5_years"
                             <?php echo (isset($old['general_remarks']) && $old['general_remarks'] === 'registration_5_years') ? 'selected' : ''; ?>>
                             Registration Fee — valid for 5 years
