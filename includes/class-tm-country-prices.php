@@ -1,13 +1,147 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-class TM_Country_Prices {
+    class TM_Country_Prices {
 
-    /* ============================================================
-       STATIC MEMORY FOR ERROR + OLD INPUT
-    ============================================================ */
-    public static $error_message = "";
-    public static $old_input = [];
+        /* ============================================================
+        STATIC MEMORY FOR ERROR + OLD INPUT
+        ============================================================ */
+        public static $error_message = "";
+        public static $old_input = [];
+
+    //     public static function get_priority_price_row($country_id, $type = 'word') {
+    //         global $wpdb;
+    //         $table = TM_Database::table_name('country_prices');
+
+    //         // Fetch all rows for this country
+    //         $rows = $wpdb->get_results(
+    //             $wpdb->prepare("SELECT * FROM $table WHERE country_id = %d", $country_id)
+    //         );
+
+    //         if (!$rows) return null;
+
+    //         // Priority rules
+    //         $filing_basic = null;
+    //         $filing_other = null;
+    //         $reg_basic = null;
+    //         $reg_mid = null;
+    //         $reg_other = null;
+
+    //         foreach ($rows as $r) {
+
+    //             // Filing
+    //             if (strpos($r->general_remarks, 'filing_basic') === 0) {
+    //                 $filing_basic = $r; 
+    //             } elseif (strpos($r->general_remarks, 'filing_') === 0) {
+    //                 $filing_other = $r;
+    //             }
+
+    //             // Registration
+    //             if (strpos($r->general_remarks, 'registration_basic') === 0) {
+    //                 $reg_basic = $r;
+    //             } elseif (
+    //                 strpos($r->general_remarks, 'registration_5_years') === 0 ||
+    //                 strpos($r->general_remarks, 'registration_10_years') === 0
+    //             ) {
+    //                 $reg_mid = $r;
+    //             } elseif (strpos($r->general_remarks, 'registration_') === 0) {
+    //                 $reg_other = $r;
+    //             }
+    //         }
+
+    //         // Priority resolution
+    //         if ($filing_basic) return $filing_basic;
+    //         if ($filing_other) return $filing_other;
+
+    //         if ($reg_basic) return $reg_basic;
+    //         if ($reg_mid) return $reg_mid;
+    //         if ($reg_other) return $reg_other;
+
+    //         return $rows[0]; // fallback
+    //    }
+
+    public static function get_priority_price_row($country_id, $mode = 'filing')
+    {
+        global $wpdb;
+        $table = $wpdb->prefix . 'tm_country_prices';
+
+        $rows = $wpdb->get_results(
+            $wpdb->prepare("SELECT * FROM $table WHERE country_id = %d", $country_id)
+        );
+
+        if (!$rows) return null;
+
+        // Storage for rule matches
+        $filing_basic = null;
+        $filing_other = null;
+
+        $reg_basic = null;
+        $reg_mid   = null; // 5 yrs / 10 yrs
+        $reg_other = null;
+
+        foreach ($rows as $r) {
+            $remark = trim($r->general_remarks);
+
+            /** --------------------------
+             *  FILING PRIORITY
+             * ------------------------- */
+            if (strpos($remark, 'filing_basic') === 0) {
+                $filing_basic = $r;
+            } elseif (strpos($remark, 'filing_') === 0) {
+                $filing_other = $r;
+            }
+
+            /** --------------------------
+             *  REGISTRATION PRIORITY
+             * ------------------------- */
+            if (strpos($remark, 'registration_basic') === 0) {
+                $reg_basic = $r;
+            } 
+            elseif (
+                strpos($remark, 'registration_5_years') === 0 ||
+                strpos($remark, 'registration_10_years') === 0
+            ) {
+                $reg_mid = $r;
+            } 
+            elseif (strpos($remark, 'registration_') === 0) {
+                $reg_other = $r;
+            }
+        }
+
+        /** ===========================================================
+         *  MODE SELECTION
+         *  Step-1 → filing only
+         *  Step-2 → registration only
+         * =========================================================== */
+        if ($mode === 'filing') {
+            if ($filing_basic) return $filing_basic;
+            if ($filing_other) return $filing_other;
+
+            // fallback to registration if no filing rows at all
+            if ($reg_basic) return $reg_basic;
+            if ($reg_mid)   return $reg_mid;
+            if ($reg_other) return $reg_other;
+
+            return $rows[0];
+        }
+
+        if ($mode === 'registration') {
+            if ($reg_basic) return $reg_basic;
+            if ($reg_mid)   return $reg_mid;
+            if ($reg_other) return $reg_other;
+
+            // fallback to filing if no registration rows
+            if ($filing_basic) return $filing_basic;
+            if ($filing_other) return $filing_other;
+
+            return $rows[0];
+        }
+
+        return $rows[0];
+    }
+
+
+
 
     /* ============================================================
        INIT HOOK
@@ -175,25 +309,25 @@ class TM_Country_Prices {
             }
 
             // ❌ Cannot save empty rule if pricing exists
-            if ($general_remarks === "") {
-                self::$error_message = "Cannot save an empty pricing rule because this country already has pricing.";
-                self::$old_input = $_POST;
-                return;
-            }
+            // if ($general_remarks === "") {
+            //     self::$error_message = "Cannot save an empty pricing rule because this country already has pricing.";
+            //     self::$old_input = $_POST;
+            //     return;
+            // }
 
             // ❌ Prevent second Filing rule
-            if (in_array($old_rule, $filing_rules) && $is_filing) {
-                self::$error_message = "This country already has a Filing Fee rule.";
-                self::$old_input = $_POST;
-                return;
-            }
+            // if (in_array($old_rule, $filing_rules) && $is_filing) {
+            //     self::$error_message = "This country already has a Filing Fee rule.";
+            //     self::$old_input = $_POST;
+            //     return;
+            // }
 
             // ❌ Prevent second Registration rule
-            if (in_array($old_rule, $registration_rules) && $is_registration) {
-                self::$error_message = "This country already has a Registration Fee rule.";
-                self::$old_input = $_POST;
-                return;
-            }
+            // if (in_array($old_rule, $registration_rules) && $is_registration) {
+            //     self::$error_message = "This country already has a Registration Fee rule.";
+            //     self::$old_input = $_POST;
+            //     return;
+            // }
         }
 
         // 2️⃣ If validation passed → update
@@ -310,6 +444,69 @@ class TM_Country_Prices {
 
         return $row;
     }
+
+
+    public static function get_step1_price_row($country_id) {
+        global $wpdb;
+        $table = TM_Database::table_name('country_prices');
+
+        $rows = $wpdb->get_results(
+            $wpdb->prepare("SELECT * FROM $table WHERE country_id = %d", $country_id)
+        );
+
+        if (!$rows) return null;
+
+        $filing_basic = null;
+        $filing_20 = null;
+        $filing_other = null;
+        $empty_row = null;
+
+        foreach ($rows as $r) {
+            $rem = trim($r->general_remarks);
+
+            if ($rem === "filing_basic") $filing_basic = $r;
+            elseif ($rem === "filing_20_goods") $filing_20 = $r;
+            elseif (strpos($rem, "filing_") === 0) $filing_other = $r;
+            elseif ($rem === "") $empty_row = $r;
+        }
+
+        if ($filing_basic) return $filing_basic;
+        if ($filing_20) return $filing_20;
+        if ($filing_other) return $filing_other;
+        if ($empty_row) return $empty_row;
+
+        return $rows[0];
+    }
+
+    public static function get_priority_price_row_filing_only($country_id) {
+        global $wpdb;
+        $table = TM_Database::table_name('country_prices');
+
+        $rows = $wpdb->get_results(
+            $wpdb->prepare("SELECT * FROM $table WHERE country_id = %d", $country_id)
+        );
+
+        if (!$rows) return null;
+
+        $filing_basic = null;
+        $filing_other = null;
+
+        foreach ($rows as $r) {
+
+            if (strpos($r->general_remarks, 'filing_basic') === 0) {
+                $filing_basic = $r;
+            }
+            elseif (strpos($r->general_remarks, 'filing_') === 0) {
+                $filing_other = $r;
+            }
+        }
+
+        if ($filing_basic) return $filing_basic;
+        if ($filing_other) return $filing_other;
+
+        // fallback to first record if country has NO filing rows
+        return $rows[0];
+}
 
 
 

@@ -20,7 +20,6 @@ $nonce = wp_create_nonce('tm_admin_trademark_nonce');
                 <th>Status</th>
                 <th>User</th>
                 <th>Date</th>
-                <th>Order</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -43,9 +42,7 @@ $nonce = wp_create_nonce('tm_admin_trademark_nonce');
 
                 <td><?php echo date('M d, Y', strtotime($t->created_at)); ?></td>
 
-                <td>
-                    <a href="<?php echo get_edit_post_link($t->woo_order_id); ?>" target="_blank">#<?php echo $t->woo_order_id; ?></a>
-                </td>
+         
 
                 <td>
                     <button class="button tm-admin-view-btn" data-id="<?php echo $t->id; ?>">View</button>

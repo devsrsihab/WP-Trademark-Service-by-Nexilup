@@ -166,7 +166,7 @@ class TM_WooCommerce {
         update_option('tm_master_product_id', $product_id);
     }
 
-    private static function get_master_product_id() {
+    public  static function get_master_product_id() {
         if (defined('TM_MASTER_PRODUCT_ID') && TM_MASTER_PRODUCT_ID) {
             return (int) TM_MASTER_PRODUCT_ID;
         }
@@ -191,11 +191,11 @@ class TM_WooCommerce {
             wp_send_json_error(['message' => 'Step1 product not configured.']);
         }
 
-        foreach (WC()->cart->get_cart() as $key => $item) {
-            if (isset($item['tm_data']) || isset($item['tm_type'])) {
-                WC()->cart->remove_cart_item($key);
-            }
-        }
+        // foreach (WC()->cart->get_cart() as $key => $item) {
+        //     if (isset($item['tm_data']) || isset($item['tm_type'])) {
+        //         WC()->cart->remove_cart_item($key);
+        //     }
+        // }
 
 
 
@@ -262,9 +262,9 @@ class TM_WooCommerce {
             wp_send_json_error(['message' => 'Master product missing']);
         }
 
-        foreach (WC()->cart->get_cart() as $key => $item) {
-            if (isset($item['tm_data']) || isset($item['tm_type'])) WC()->cart->remove_cart_item($key);
-        }
+        // foreach (WC()->cart->get_cart() as $key => $item) {
+        //     if (isset($item['tm_data']) || isset($item['tm_type'])) WC()->cart->remove_cart_item($key);
+        // }
 
         $tm_data = [
             // 'country'     => sanitize_text_field($_POST['country']),
@@ -358,88 +358,88 @@ class TM_WooCommerce {
         /**
          * Apply dynamic price so WC cart total matches your DB price
          */
-public static function override_dynamic_price($cart)
-{
-    if (is_admin() && !wp_doing_ajax()) return;
-    if (!$cart) return;
+    public static function override_dynamic_price($cart)
+    {
+        if (is_admin() && !wp_doing_ajax()) return;
+        if (!$cart) return;
 
-    foreach ($cart->get_cart() as $key => $item) {
+        foreach ($cart->get_cart() as $key => $item) {
 
-        //-----------------------------------------
-        // 1) EXTRACT META (nested or flattened)
-        //-----------------------------------------
-        $tm = $item['tm_data'] ?? $item;
+            //-----------------------------------------
+            // 1) EXTRACT META (nested or flattened)
+            //-----------------------------------------
+            $tm = $item['tm_data'] ?? $item;
 
-        $country_id = intval(
-            $tm['country_id']
-            ?? $tm['tm_country']
-            ?? 0
-        );
-
-        $type = sanitize_text_field(
-            $tm['type']
-            ?? $tm['tm_type']
-            ?? 'word'
-        );
-
-        $step = intval(
-            $tm['step']
-            ?? $tm['tm_step']
-            ?? 1
-        );
-
-        $classes = intval(
-            $tm['classes']
-            ?? $tm['tm_class_count']
-            ?? $tm['tm_classes']
-            ?? 1
-        );
-
-        //-----------------------------------------
-        // 2) SECURE BACKEND TOTAL
-        // prefer "tm_total_price" stored earlier
-        //-----------------------------------------
-        $stored_total = floatval(
-            $tm['tm_total_price']
-            ?? $tm['total_price']
-            ?? $tm['tm_total']
-            ?? 0
-        );
-
-        //-----------------------------------------
-        // 3) CHOOSE FINAL PRICE
-        //-----------------------------------------
-        if ($stored_total > 0) {
-            $total = $stored_total; // safest
-        } else {
-            // legacy fallback = compute from DB
-            $total = self::compute_item_total(
-                $country_id,
-                $type,
-                $step,
-                $classes,
-                $stored_total
+            $country_id = intval(
+                $tm['country_id']
+                ?? $tm['tm_country']
+                ?? 0
             );
+
+            $type = sanitize_text_field(
+                $tm['type']
+                ?? $tm['tm_type']
+                ?? 'word'
+            );
+
+            $step = intval(
+                $tm['step']
+                ?? $tm['tm_step']
+                ?? 1
+            );
+
+            $classes = intval(
+                $tm['classes']
+                ?? $tm['tm_class_count']
+                ?? $tm['tm_classes']
+                ?? 1
+            );
+
+            //-----------------------------------------
+            // 2) SECURE BACKEND TOTAL
+            // prefer "tm_total_price" stored earlier
+            //-----------------------------------------
+            $stored_total = floatval(
+                $tm['tm_total_price']
+                ?? $tm['total_price']
+                ?? $tm['tm_total']
+                ?? 0
+            );
+
+            //-----------------------------------------
+            // 3) CHOOSE FINAL PRICE
+            //-----------------------------------------
+            if ($stored_total > 0) {
+                $total = $stored_total; // safest
+            } else {
+                // legacy fallback = compute from DB
+                $total = self::compute_item_total(
+                    $country_id,
+                    $type,
+                    $step,
+                    $classes,
+                    $stored_total
+                );
+            }
+
+            //-----------------------------------------
+            // 4) APPLY PRICE
+            //-----------------------------------------
+            $item['data']->set_price($total);
+
+            //-----------------------------------------
+            // 5) SYNC BACK INTO CART ARRAY
+            //-----------------------------------------
+            if (!empty($item['tm_data'])) {
+                // nested format
+                $cart->cart_contents[$key]['tm_data']['tm_total_price'] = $total;
+            }
+
+            // flattened format
+            $cart->cart_contents[$key]['tm_total_price'] = $total;
+            $cart->cart_contents[$key]['tm_total']       = $total;
         }
-
-        //-----------------------------------------
-        // 4) APPLY PRICE
-        //-----------------------------------------
-        $item['data']->set_price($total);
-
-        //-----------------------------------------
-        // 5) SYNC BACK INTO CART ARRAY
-        //-----------------------------------------
-        if (!empty($item['tm_data'])) {
-            // nested format
-            $cart->cart_contents[$key]['tm_data']['tm_total_price'] = $total;
-        }
-
-        // flattened format
-        $cart->cart_contents[$key]['tm_total_price'] = $total;
-        $cart->cart_contents[$key]['tm_total']       = $total;
     }
-}
 
 
 

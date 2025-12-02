@@ -98,12 +98,12 @@ $billing_addr  = $order->get_formatted_billing_address();
                                <?php echo esc_html( $item->get_meta( 'tm_mark_text' ) ); ?>
                             </div>
 
-                            <div class="tm-item-row">
+                            <!-- <div class="tm-item-row">
                                 <span class="label">Type:</span>
                                 <span class="value">
                                     <?php echo esc_html( $item->get_meta( 'tm_type' ) ); ?>
                                 </span>
-                            </div>
+                            </div> -->
 
                             <div class="tm-item-row">
                                 <span class="label">Mark:</span>
@@ -113,16 +113,57 @@ $billing_addr  = $order->get_formatted_billing_address();
                             </div>
 
                             <div class="tm-item-row">
-                                <span class="label">Classes:</span>
-                                <span class="value">
-                                    <?php echo esc_html( $item->get_meta( 'tm_classes' ) ); ?>
-                                </span>
-                            </div>
+                            <span class="label">Classes:</span>
+<span class="value">
+    <?php
 
+    function tm_normalize_json($value) {
+
+        if (!is_string($value)) return [];
+
+        // 1️⃣ Remove ALL wrapping quotes repeatedly
+        while (
+            (substr($value, 0, 1) === '"' && substr($value, -1) === '"') ||
+            (substr($value, 0, 1) === "'" && substr($value, -1) === "'")
+        ) {
+            $value = substr($value, 1, -1);
+        }
+
+        // 2️⃣ Unescape backslashes
+        $value = stripcslashes($value);
+
+        // 3️⃣ First decode
+        $decoded = json_decode($value, true);
+
+        // 4️⃣ If still NULL, try decoding again
+        if ($decoded === null && (str_contains($value, '[') || str_contains($value, '{'))) {
+            $decoded = json_decode(stripcslashes($value), true);
+        }
+
+        // 5️⃣ Final cleanup
+        if ($decoded === null) {
+            $decoded = json_decode(trim($value, "\"'"), true);
+        }
+
+        return is_array($decoded) ? $decoded : [];
+    }
+
+    // NOW CALL THE FUNCTION CORRECTLY
+    $class_list = tm_normalize_json($item->get_meta( 'tm_tm_class_list' ));
+
+    echo !empty($class_list)
+        ? esc_html(implode('-', $class_list))
+        : '—';
+
+    ?>
+</span>
+
+                            </div>
+                        
                             <div class="tm-item-row">
                                 <span class="label">Goods / Services:</span>
                                 <span class="value">
-                                    <?php echo esc_html( $item->get_meta( 'tm_goods' ) ); ?>
+                                    <?php echo esc_html( $item->get_meta( 'tm_tm_goods' ) ); ?>
                                 </span>
                             </div>
 
@@ -155,7 +196,7 @@ $billing_addr  = $order->get_formatted_billing_address();
         </div>
 
         <!-- Totals + billing -->
-        <div class="tm-bottom-grid">
+        <!-- <div class="tm-bottom-grid">
             <div class="tm-total-box">
                 <h3 class="tm-box-title">Order totals</h3>
                 <table class="tm-totals-table">
@@ -196,7 +237,7 @@ $billing_addr  = $order->get_formatted_billing_address();
                     ?>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Next steps -->
         <div class="tm-next-steps">

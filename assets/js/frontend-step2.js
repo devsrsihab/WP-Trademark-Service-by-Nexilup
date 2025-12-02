@@ -75,7 +75,7 @@
           return;
         }
 
-        $card.find(".tm-editable-title").text(newTitle);
+        $card.find(".tm-header-subtitle").text(newTitle);
 
         $card.find(".tm-cart-editbox").hide();
         $card.find(".tm-cart-view").show();

@@ -129,8 +129,13 @@
   margin-top: 8px;
   font-size: 11px;
   color: #4a5e89;
+  line-height: 1rem;
 }
-
+.tm-good-and-services-help1 {
+  line-height: 1.1rem;
+  font-size: 11px;
+  color: #4a5e89;
+}
 /* inputs */
 .tm-input,
 .tm-select,

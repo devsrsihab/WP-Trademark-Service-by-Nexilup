@@ -167,6 +167,106 @@
     );
   }
 
+  /* -------------------------------------------------------
+      Logo Upload (WP Media Upload)
+  ------------------------------------------------------- */
+
+  function showPreviewUrl(url) {
+    $previewImg.attr("src", url);
+    $(".tm-upload-inner").hide();
+    $previewWrap.show();
+  }
+
+  function resetPreview() {
+    $previewImg.attr("src", "");
+    $previewWrap.hide();
+    $(".tm-upload-inner").show();
+    $fileInput.val("");
+
+    let st = getFormState();
+    st.logo_id = "";
+    st.logo_url = "";
+    saveFormState(st);
+  }
+
+  function uploadLogoToWP(file) {
+    const fd = new FormData();
+    fd.append("action", "tm_upload_logo");
+    fd.append("nonce", TM_GLOBAL.nonce);
+    fd.append("logo", file);
+
+    $.ajax({
+      url: TM_GLOBAL.ajax_url,
+      type: "POST",
+      data: fd,
+      processData: false,
+      contentType: false,
+      success: function (resp) {
+        if (!resp.success) {
+          alert(resp.data.message || "Upload failed.");
+          resetPreview();
+          return;
+        }
+
+        let st = getFormState();
+        st.logo_id = resp.data.id;
+        st.logo_url = resp.data.url;
+        saveFormState(st);
+
+        showPreviewUrl(resp.data.url);
+      },
+      error: function () {
+        alert("Upload error");
+        resetPreview();
+      },
+    });
+  }
+
+  // STOP bubbling on file input (this fixes the infinite loop error)
+  $("#tm-logo-file").on("click", function (e) {
+    e.stopPropagation();
+  });
+
+  // Click = open file browser
+  $("#tm-upload-box")
+    .off("click")
+    .on("click", function (e) {
+      if ($(e.target).is("#tm-remove-logo")) return;
+      $("#tm-logo-file").trigger("click");
+    });
+
+  $fileInput.on("change", function () {
+    const file = this.files[0];
+    if (file) uploadLogoToWP(file);
+  });
+
+  // Drag & Drop upload
+  $uploadBox.on("dragenter dragover", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    $uploadBox.addClass("is-dragover");
+  });
+
+  $uploadBox.on("dragleave", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    $uploadBox.removeClass("is-dragover");
+  });
+
+  $uploadBox.on("drop", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    $uploadBox.removeClass("is-dragover");
+
+    const file = e.originalEvent.dataTransfer.files[0];
+    if (file) uploadLogoToWP(file);
+  });
+
+  $("#tm-remove-logo").on("click", function (e) {
+    e.preventDefault();
+    resetPreview();
+  });
+
   /* -----------------------------
    Continue → Step 2
    + ADD TO CART in Step 1

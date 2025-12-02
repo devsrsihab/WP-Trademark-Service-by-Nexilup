@@ -51,12 +51,15 @@ update_option('tm_last_country_id', $country_id);
 
           <?php foreach ( WC()->cart->get_cart() as $cart_item_key => $item ):
 
+          // var_dump($item);
+
             // var_dump($item['tm_logo_url']);
             // -------- GET TM DATA (nested OR flattened) ----------
             if (!empty($item['tm_data'])) {
                 $tm = $item['tm_data'];
                 $type        = strtolower($tm['type'] ?? '');
-                $classes     = max(1, intval($tm['classes'] ?? 1));
+                $classes     = max(1, intval($tm['tm_class_count'] ?? 1));
+                $tm_class_list = $tm['tm_class_list'] ?? '[]';
                 $step_num    = max(1, intval($tm['step'] ?? ($item['tm_step'] ?? 1)));
                 $tm_title    = $tm['mark_text'] ?? '';
                 $tm_from     = $tm['tm_from'] ?? '';
@@ -65,7 +68,9 @@ update_option('tm_last_country_id', $country_id);
                 $fallback    = floatval($tm['total_price'] ?? 0);
             } else {
                 $type        = strtolower($item['tm_type'] ?? '');
-                $classes     = max(1, intval($item['tm_classes'] ?? 1));
+                $classes     = max(1, intval($item['tm_class_count'] ?? 1));
+                $tm_class_list = $item['tm_class_list'] ?? '[]';
+
                 $step_num    = max(1, intval($item['tm_step'] ?? 1));
                 $tm_title    = $item['tm_text'] ?? '';
                 $tm_from     = $item['tm_from'] ?? '';
@@ -249,10 +254,58 @@ update_option('tm_last_country_id', $country_id);
                         <div class="tm-header-subtitle"><?php echo esc_html($tm_title); ?></div>
                     <?php endif; ?>
                 </div>
+                <div class="tm-header-classes">
+              <span>
+                  <?php
+
+          if (!function_exists('tm_normalize_json')) {
+            echo "Class(es):";
+              function tm_normalize_json($value) {
+
+                  if (!is_string($value)) return [];
+
+                  // 1️⃣ Remove ALL wrapping quotes repeatedly
+                  while (
+                      (substr($value, 0, 1) === '"' && substr($value, -1) === '"') ||
+                      (substr($value, 0, 1) === "'" && substr($value, -1) === "'")
+                  ) {
+                      $value = substr($value, 1, -1);
+                  }
+
+                  // 2️⃣ Unescape any slashes
+                  $value = stripcslashes($value);
+
+                  // 3️⃣ Attempt JSON decode
+                  $decoded = json_decode($value, true);
+
+                  // 4️⃣ If still NULL but the string *contains JSON characters* → try second decode
+                  if ($decoded === null && (str_contains($value, '[') || str_contains($value, '{'))) {
+                      $decoded = json_decode(stripcslashes($value), true);
+                  }
+
+                  // 5️⃣ Last fallback: try removing quotes again
+                  if ($decoded === null) {
+                      $value2 = trim($value, "\"'");
+                      $decoded = json_decode($value2, true);
+                  }
+
+                  return is_array($decoded) ? $decoded : [];
+              }
+          }
+
+
+                
+
+                  $class_list = tm_normalize_json($tm_class_list);
+                  echo esc_html(implode('-', $class_list));
+                  ?>
+              </span>
+
+                </div>
             </div>
 
             <div class="tm-cart-row">
-                <div class="tm-col tm-col-left tm-title"><?php echo esc_html($editable_title); ?></div>
+                <div class="tm-col tm-col-left tm-title"><?php echo "Comprehensive Trademark Study"; ?></div>
                 <div class="tm-col tm-col-mid"><?php echo esc_html($mid_text); ?></div>
 
                 <!-- FIXED PRICE DISPLAY -->

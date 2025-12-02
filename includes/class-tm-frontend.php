@@ -16,38 +16,92 @@ class TM_Frontend {
         add_action("wp_ajax_tm_filter_country_table", [__CLASS__, "ajax_filter_table"]);
         add_action("wp_ajax_nopriv_tm_filter_country_table", [__CLASS__, "ajax_filter_table"]);
 
+        add_action('wp_ajax_tm_get_country_price', [__CLASS__,'tm_get_country_price']);
+        add_action('wp_ajax_nopriv_tm_get_country_price', [__CLASS__,'tm_get_country_price']);
+
+        add_action('wp_ajax_tm_get_country_price_step1', [TM_Frontend::class, 'tm_get_country_price_step1']);
+        add_action('wp_ajax_nopriv_tm_get_country_price_step1', [TM_Frontend::class, 'tm_get_country_price_step1']);
+
+
     }
 
-public static function ajax_filter_table() {
+//     function tm_get_country_price() {
+//     if (!isset($_POST['country_id']) || !isset($_POST['type'])) {
+//         wp_send_json_error(['message' => 'Missing data']);
+//     }
 
-    check_ajax_referer('tm_nonce', 'nonce');
-    global $wpdb;
+//     global $wpdb;
+//     $country_id = intval($_POST['country_id']);
+//     $type       = sanitize_text_field($_POST['type']);
 
-    $country = sanitize_text_field($_POST['country'] ?? '');
-    $type    = sanitize_text_field($_POST['type'] ?? 'word');
+//     // Get the correct price row using your priority rules
+//     $price_row = TM_Country_Prices::get_priority_price_row($country_id, $type);
 
-    $where = "WHERE status = 1";
+//     if (!$price_row) {
+//         wp_send_json_error(['message' => 'No price row']);
+//     }
 
-    if ($country) {
-        $where .= $wpdb->prepare(" AND iso_code = %s", $country);
+//     $first = floatval($price_row->first_class_fee);
+//     $add   = floatval($price_row->additional_class_fee);
+
+//     wp_send_json_success([
+//         'step1_one' => $first,
+//         'step1_add' => $add
+//     ]);
+// }
+
+public static function tm_get_country_price_step1() {
+
+    $country_id = intval($_POST['country_id']);
+    $type = sanitize_text_field($_POST['type']);
+
+    $row = TM_Country_Prices::get_step1_price_row($country_id);
+
+    if (!$row) {
+        wp_send_json_error(['message' => 'No price row found']);
     }
 
-    // Fetch filtered countries
-    $countries = $wpdb->get_results("
-        SELECT * FROM {$wpdb->prefix}tm_countries
-        $where
-        ORDER BY country_name ASC
-    ");
-
-    // Pass $type to partial
-    $selected_type = $type;
-
-    ob_start();
-    include WP_TMS_NEXILUP_PLUGIN_PATH . "templates/frontend/partials/table-body.php";
-    $html = ob_get_clean();
-
-    wp_send_json_success(['html' => $html]);
+    wp_send_json_success([
+        'first' => floatval($row->first_class_fee),
+        'add'   => floatval($row->additional_class_fee),
+        'currency' => $row->currency ?: 'USD'
+    ]);
 }
+
+
+
+
+public static function tm_get_country_price() {
+
+    if (!isset($_POST['country_id']) || !isset($_POST['type'])) {
+        wp_send_json_error(['message' => 'Missing data']);
+    }
+
+    global $wpdb;
+    $country_id = intval($_POST['country_id']);
+    $type       = sanitize_text_field($_POST['type']);
+
+    // Always fallback to word
+    if ($type !== 'word') {
+        $type = 'word';
+    }
+
+    // Get price row
+    $price_row = TM_Country_Prices::get_priority_price_row($country_id, $type);
+
+    if (!$price_row) {
+        wp_send_json_error(['message' => 'No price row']);
+    }
+
+    $first = floatval($price_row->first_class_fee);
+    $add   = floatval($price_row->additional_class_fee);
+
+    wp_send_json_success([
+        'step1_one' => $first,
+        'step1_add' => $add
+    ]);
+}
+
 
 
 
@@ -241,109 +295,109 @@ public static function ajax_filter_table() {
         return ob_get_clean();
     }
 
-public static function shortcode_country_single($atts) {
+    public static function shortcode_country_single($atts) {
 
-    wp_enqueue_style('tm-frontend-css');
-    wp_enqueue_style('tm-frontend-modal-css');
-    wp_enqueue_style('tm-country-single-css');
-    wp_enqueue_script('tm-prices-modal-js');
+        wp_enqueue_style('tm-frontend-css');
+        wp_enqueue_style('tm-frontend-modal-css');
+        wp_enqueue_style('tm-country-single-css');
+        wp_enqueue_script('tm-prices-modal-js');
 
-    /* -----------------------------------
-       1. Validate country parameter
-    ----------------------------------- */
-    if (!isset($_GET['country'])) {
-        return "<p class='tm-error'>No country selected.</p>";
+        /* -----------------------------------
+        1. Validate country parameter
+        ----------------------------------- */
+        if (!isset($_GET['country'])) {
+            return "<p class='tm-error'>No country selected.</p>";
+        }
+
+        $iso = sanitize_text_field($_GET['country']);
+
+        global $wpdb;
+        $countries_table = TM_Database::table_name('countries');
+        $prices_table    = TM_Database::table_name('country_prices');
+        $sc_table        = TM_Database::table_name('service_conditions');
+
+        /* -----------------------------------
+        2. Load country
+        ----------------------------------- */
+        $country = $wpdb->get_row(
+            $wpdb->prepare("SELECT * FROM $countries_table WHERE iso_code = %s", $iso)
+        );
+
+        if (!$country) {
+            return "<p class='tm-error'>Invalid country.</p>";
+        }
+
+        /* -----------------------------------
+        3. Load single price row
+        ----------------------------------- */
+        $price = $wpdb->get_row(
+            $wpdb->prepare("SELECT * FROM $prices_table WHERE country_id = %d LIMIT 1", $country->id)
+        );
+
+        if (!$price) {
+            return "<p class='tm-error'>No pricing available for this country.</p>";
+        }
+
+        /* -----------------------------------
+        4. Build pricing model (same logic as table)
+        ----------------------------------- */
+        $remark  = trim($price->general_remarks);
+        $first   = floatval($price->first_class_fee);
+        $add     = floatval($price->additional_class_fee);
+        $currency = $price->currency ?: 'USD';
+
+        if (strpos($remark, 'filing_') === 0) {
+            $fees = [
+                's1_one' => $first,
+                's1_add' => $add,
+                's2_one' => $add,
+                's2_add' => $add,
+                's3_one' => $add,
+                's3_add' => $add,
+            ];
+        } elseif (strpos($remark, 'registration_') === 0) {
+            $fees = [
+                's1_one' => $add,
+                's1_add' => $add,
+                's2_one' => $add,
+                's2_add' => $add,
+                's3_one' => $add,
+                's3_add' => $add,
+            ];
+        } else {
+            $fees = [
+                's1_one' => $first,
+                's1_add' => $add,
+                's2_one' => $add,
+                's2_add' => $add,
+                's3_one' => $add,
+                's3_add' => $add,
+            ];
+        }
+
+        /* -----------------------------------
+        5. Load ONE service condition row
+        ----------------------------------- */
+        $service_condition = $wpdb->get_row(
+            $wpdb->prepare("SELECT * FROM $sc_table WHERE country_id = %d LIMIT 1", $country->id)
+        );
+
+        $has_service_condition = ($service_condition && trim($service_condition->content) !== "");
+
+        /* -----------------------------------
+        6. Pass data to template
+        ----------------------------------- */
+        ob_start();
+
+        $p        = $price;
+        $sc_item  = $service_condition;
+        $has_sc   = $has_service_condition;
+        $fee_data = $fees;
+
+        include WP_TMS_NEXILUP_PLUGIN_PATH . 'templates/frontend/country-single.php';
+
+        return ob_get_clean();
     }
-
-    $iso = sanitize_text_field($_GET['country']);
-
-    global $wpdb;
-    $countries_table = TM_Database::table_name('countries');
-    $prices_table    = TM_Database::table_name('country_prices');
-    $sc_table        = TM_Database::table_name('service_conditions');
-
-    /* -----------------------------------
-       2. Load country
-    ----------------------------------- */
-    $country = $wpdb->get_row(
-        $wpdb->prepare("SELECT * FROM $countries_table WHERE iso_code = %s", $iso)
-    );
-
-    if (!$country) {
-        return "<p class='tm-error'>Invalid country.</p>";
-    }
-
-    /* -----------------------------------
-       3. Load single price row
-    ----------------------------------- */
-    $price = $wpdb->get_row(
-        $wpdb->prepare("SELECT * FROM $prices_table WHERE country_id = %d LIMIT 1", $country->id)
-    );
-
-    if (!$price) {
-        return "<p class='tm-error'>No pricing available for this country.</p>";
-    }
-
-    /* -----------------------------------
-       4. Build pricing model (same logic as table)
-    ----------------------------------- */
-    $remark  = trim($price->general_remarks);
-    $first   = floatval($price->first_class_fee);
-    $add     = floatval($price->additional_class_fee);
-    $currency = $price->currency ?: 'USD';
-
-    if (strpos($remark, 'filing_') === 0) {
-        $fees = [
-            's1_one' => $first,
-            's1_add' => $add,
-            's2_one' => $add,
-            's2_add' => $add,
-            's3_one' => $add,
-            's3_add' => $add,
-        ];
-    } elseif (strpos($remark, 'registration_') === 0) {
-        $fees = [
-            's1_one' => $add,
-            's1_add' => $add,
-            's2_one' => $add,
-            's2_add' => $add,
-            's3_one' => $add,
-            's3_add' => $add,
-        ];
-    } else {
-        $fees = [
-            's1_one' => $first,
-            's1_add' => $add,
-            's2_one' => $add,
-            's2_add' => $add,
-            's3_one' => $add,
-            's3_add' => $add,
-        ];
-    }
-
-    /* -----------------------------------
-       5. Load ONE service condition row
-    ----------------------------------- */
-    $service_condition = $wpdb->get_row(
-        $wpdb->prepare("SELECT * FROM $sc_table WHERE country_id = %d LIMIT 1", $country->id)
-    );
-
-    $has_service_condition = ($service_condition && trim($service_condition->content) !== "");
-
-    /* -----------------------------------
-       6. Pass data to template
-    ----------------------------------- */
-    ob_start();
-
-    $p        = $price;
-    $sc_item  = $service_condition;
-    $has_sc   = $has_service_condition;
-    $fee_data = $fees;
-
-    include WP_TMS_NEXILUP_PLUGIN_PATH . 'templates/frontend/country-single.php';
-
-    return ob_get_clean();
-}
 
 
 
@@ -392,6 +446,15 @@ public static function shortcode_country_single($atts) {
         if ($step === 1) {
             wp_enqueue_style('tm-step1-css');
             wp_enqueue_script('tm-step1-js');
+            wp_localize_script('tm-step1-js', 'tm_ajax', [
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce'    => wp_create_nonce('tm_nonce')
+            ]);
+            
+    // ⭐ ADD THIS LINE
+    $js_data['step2_url'] = site_url('/tm/trademark-registration/order-form?country='.$country->iso_code);
+
+
             wp_localize_script('tm-step1-js', 'TM_GLOBAL', $js_data);
             include WP_TMS_NEXILUP_PLUGIN_PATH . 'templates/frontend/step1.php';
 

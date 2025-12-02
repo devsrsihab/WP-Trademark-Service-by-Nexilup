@@ -83,7 +83,7 @@ $step3_url = add_query_arg(['country' => $country->iso_code], site_url('/myaccou
 <!-- =============================
      STEP 3
 ============================= -->
-<!-- <section class="tm-nominus-step">
+<section class="tm-nominus-step">
     <h2 class="tm-nominus-step-title">Step 3 - Registration Certificate</h2>
 
     <div class="tm-nominus-step-inner">
@@ -108,7 +108,7 @@ $step3_url = add_query_arg(['country' => $country->iso_code], site_url('/myaccou
             </div>
         </div>
     </div>
-</section> -->
+</section>
 
 <?php include WP_TMS_NEXILUP_PLUGIN_PATH . 'templates/frontend/partials/prices-and-conditions-modals.php'; ?>
 
